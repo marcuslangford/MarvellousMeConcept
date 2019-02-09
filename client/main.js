@@ -2,7 +2,7 @@ import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { Notes } from '../lib/collections.js';
 import { Notifications } from '../lib/collections.js';
-import { Activites } from '../lib/collections.js';
+import { Activities } from '../lib/collections.js';
 import { Badges } from '../lib/collections.js';
 import { Saved } from '../lib/collections.js';
 import { Messages } from '../lib/collections.js';
@@ -20,13 +20,13 @@ Template.body.helpers({
     var item;
 
     //Find all new items in collections which are new
-    newActivities = Activites.find({new : true});
+    newActivities = Activities.find({new : true});
     newMessages = Messages.find({new : true});
     newBadges = Badges.find({new : true});
 
     //Update items so they are no longer new and add an item to the notifications collection
     newActivities.forEach(function(item){
-      Activites.update(
+      Activities.update(
         {_id: item._id},
         {
           $set: {"new": false}
@@ -70,15 +70,15 @@ Template.body.helpers({
 
   },
 
-  activites(){
+  activities(){
 
 
     var start =  new Date();
     start.setHours(0,0,0,0);
     var end = new Date();
     end.setHours(23,59,59,999);
-    if(Activites.find({createdAt: { $gt: new Date(start - (7*24*60*60*1000)) }}).count()!= 0){
-      Session.set("atotal", Activites.find({createdAt: { $gt: new Date(start - (7*24*60*60*1000)) }}).count());
+    if(Activities.find({createdAt: { $gt: new Date(start - (7*24*60*60*1000)) }}).count()!= 0){
+      Session.set("atotal", Activities.find({createdAt: { $gt: new Date(start - (7*24*60*60*1000)) }}).count());
       console.log(Session.get("atotal"))
       getTotal();
     }
@@ -88,7 +88,7 @@ Template.body.helpers({
       case '1':
 
         if(Session.get("subjectFilter") != null){
-          return Activites.find (
+          return Activities.find (
             {
               createdAt: {$gte: start, $lt: end},
               subject  : Session.get("subjectFilter")
@@ -97,31 +97,31 @@ Template.body.helpers({
 
         } else{
 
-          return Activites.find({createdAt: {$gte: start, $lt: end}});
+          return Activities.find({createdAt: {$gte: start, $lt: end}});
         }
 
 
       case '2':
-        Session.set("atotal", Activites.find({createdAt: { $gt: new Date(start - (7*24*60*60*1000)) }}).count());
+        Session.set("atotal", Activities.find({createdAt: { $gt: new Date(start - (7*24*60*60*1000)) }}).count());
         getTotal();
         if(Session.get("subjectFilter") != null){
 
-          return Activites.find (
+          return Activities.find (
               {
                 createdAt: { $gt: new Date(start - (7*24*60*60*1000)) },
                 subject  : Session.get("subjectFilter")
               }
           );
-        }else{return Activites.find({createdAt: { $gt: new Date(start - (7*24*60*60*1000)) }})}
+        }else{return Activities.find({createdAt: { $gt: new Date(start - (7*24*60*60*1000)) }})}
 
       case '3':
         if(Session.get("subjectFilter") != null){
-          return Activites.find ({subject  : Session.get("subjectFilter")});
+          return Activities.find ({subject  : Session.get("subjectFilter")});
           break;
-        }else{return Activites.find({})};
+        }else{return Activities.find({})};
 
       case '4':
-        return Activites.find ({ saved: true});
+        return Activities.find ({ saved: true});
 
       case '5':
       dateSelected = document.getElementById('timePicker').value;
@@ -129,7 +129,7 @@ Template.body.helpers({
       document.getElementById('timePicker').value = "";
       if(Session.get("subjectFilter") != null){
 
-        return Activites.find (
+        return Activities.find (
             {
               createdAt: { $eq: new Date(dateSelected) },
               subject  : Session.get("subjectFilter")
@@ -137,7 +137,7 @@ Template.body.helpers({
         );
 
       }else{
-        return Activites.find({createdAt: { $eq: new Date(dateSelected) }})
+        return Activities.find({createdAt: { $eq: new Date(dateSelected) }})
 
       }
 
@@ -280,7 +280,7 @@ Template.activity.events({
   'click .save-activity': function(){
     event.target.className = "save-activity material-icons right saved";
 
-    Activites.update(
+    Activities.update(
       {_id: this._id},
       {
         $set: {"saved": true}
