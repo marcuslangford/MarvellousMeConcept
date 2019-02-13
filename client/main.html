@@ -20,9 +20,10 @@
     <nav>
       <div class = "nav-wrapper white">
         <a class="leftbtn waves-effect waves-light btn blue openBtn" data-activates="slide-out"  href="#!"><i class="material-icons">menu</i></a>
+
         <a class="rightbtn waves-effect waves-light btn blue modal-trigger"  id = "notify" href="#modal2"><i class="material-icons">notifications</i></a>
         <ul class="tabs tabs-transparent white">
-          <li class="tab col s3"><a href="#test1">Marcus</a></li>
+          <li id = "studentName" class="tab col s3"><a href="#test1">Marcus</a></li>
           <li class="tab col s3"><a href="#test2">Activities</a></li>
           <li class="tab col s3"><a href="#test3">Badges</a></li>
           <li class="tab col s3"><a href="#test4">Home Tasks</a></li>
@@ -39,12 +40,13 @@
     <li><div class="divider"></div></li>
     <li><a class = "modal-trigger" href="#messagesModal"><i class="material-icons">markunread</i>Messages</a></li>
     <li><a class = "modal-trigger" href="#savedModal"><i class="material-icons">favorite</i>Saved</a></li>
-    <li><a href="#!"><i class="material-icons">person</i>Account</a></li>
+    <li><a class = "modal-trigger" href="#studentsModal"><i class="material-icons">person</i>Students</a></li>
     <li><a class = "modal-trigger" href="#settingsModal"><i class="material-icons">settings</i>Settings</a></li>
   </ul>
 
   <section>
     <div id = "aFilterModal1" class = "modal">
+
       <div class = "modal-content">
         {{> ainputForm}}
       </div>
@@ -66,6 +68,19 @@
 
        </div>
     </div>
+
+    <div id="studentsModal" class="modal bottom-sheet">
+       <div class="modal-content">
+         <ul class = "collapsible">
+             <div class="collection">
+               <a href="#!" class="collection-item">Marcus</a>
+               <a href="#!" class="collection-item">James</a>
+             </div>
+         </ul>
+
+       </div>
+    </div>
+
     <div id="savedModal" class="modal bottom-sheet">
        <div class="modal-content">
        </div>
@@ -81,45 +96,25 @@
     </div>
 
     <div id="test1" class="col s12 ">
+        {{> profile}}
+      <ul class="tabs tabs-transparent white ">
+        <li class="tab col s6"><a href="#mySchool">My School</a></li>
+      </ul>
 
-      <img src="testpic.jpg" alt="" class="circle responsive-img">
-      <div class = "col s12 center">
-        Last 7 Days
-      </div>
-      <div class="card horizontal">
-        <div class = "container">
-          <div class = "row">
-            <div class = "col s6 center">
-              Activities
-              <br/>
-              <p id = "activitiesTotal"></p>
-            </div>
-            <div class = "col s6 center">
-              Badges
-              <br/>
-              <p id = "badgesTotal"></p>
-            </div>
-          </div>
+      <div id="#mySchool" class="col s12 grey">
+        <div class="collection">
+          <a href="#!" class="collection-item">Willink School</a>
+          <a href="#!" class="collection-item">Pay</a>
+          <a href="#!" class="collection-item">Newletter</a>
         </div>
       </div>
-      <ul class="tabs tabs-transparent white ">
-        <li class="tab col s6"><a href="#test5">My School</a></li>
-        <li class="tab col s6"><a href="#messagesTab">Messages</a></li>
 
-      </ul>
-      <div id="messagesTab" class="col s12 ">
-        <ul class = "collapsible">
-          {{#each messages}}
-            {{> message}}
-          {{/each}}
-        </ul>
-
-      </div>
     </div>
 
     <div id="test2" class="col s12 grey" >
       <a id = "filterButton" class="rounded waves-effect waves-light btn blue modal-trigger filterButton" href="#aFilterModal1">Filter</a>
       <a id = "favButton" class="rounded waves-effect waves-light btn white favButton" href="#filterModal1"><i class="material-icons">favorite</i></a>
+      <p id = "aempty" style="display: none;"></p>
       {{#each activities}}
         {{> activity}}
       {{/each}}
@@ -127,6 +122,7 @@
     <div id="test3" class="col s12  grey">
       <a id = "filterButton" class="rounded waves-effect waves-light btn blue modal-trigger filterButton" href="#bFilterModal1">Filter</a>
       <a id = "favButton" class="rounded waves-effect waves-light btn white favButton" href="#filterModal1"><i class="material-icons">favorite</i></a>
+      <p id = "bempty" style="display: none;"></p>
       {{#each badges}}
         {{> badge}}
       {{/each}}
@@ -174,12 +170,7 @@
   </script>
 
 </body>
-<template name = "note">
-  <li class = "collection-item">
-    {{text}}
-    <a href = "#" class = "delete-note secondary-content"><i class="material-icons">close</i></a>
-  </li>
-</template>
+
 
 <template name = "notification">
   <li class = "collection-item">
@@ -187,8 +178,6 @@
     <a href = "#" class = "delete-note secondary-content" ><i class="material-icons red">close</i></a>
   </li>
 </template>
-
-
 
 <template name = "ainputForm">
   <form id = "activitySelect">
@@ -253,7 +242,7 @@
     <p>
       <label>
         <input id = "r4" name="group1" type="radio" />
-        <span>Saved</span>
+        <span>Favourites</span>
       </label>
     </p>
     <input type="text" class="datepicker" id="timePicker">
@@ -333,9 +322,31 @@
    <li>
      <div class="collapsible-header">
        New {{type}}
-       <a href = "#"><i class="delete-message material-icons right ">close</i></a>
+       <!-- <a href = "#"><i class="delete-message material-icons right ">close</i></a> -->
      </div>
      <div class="collapsible-body"><span>{{content}}</span></div>
 
    </li>
+</template>
+
+<template name = "profile">
+  <img src="testpic.jpg" alt="" class="circle responsive-img">
+    <div class = "col s12 center">
+      Last 7 Days
+    </div>
+
+      <div class = "container">
+        <div class = "row">
+          <div class = "col s6 center">
+            Activities
+            <br/>
+            <p id = "activitiesTotal"></p>
+          </div>
+          <div class = "col s6 center">
+            Badges
+            <br/>
+            <p id = "badgesTotal"></p>
+          </div>
+        </div>
+      </div>
 </template>
