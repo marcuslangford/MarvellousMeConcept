@@ -3,11 +3,14 @@ import { ReactiveVar } from 'meteor/reactive-var';
 import { Notes } from '../lib/collections.js';
 import { Notifications } from '../lib/collections.js';
 import { Activities } from '../lib/collections.js';
+import { HomeTasks } from '../lib/collections.js';
 import { Badges } from '../lib/collections.js';
 import { Saved } from '../lib/collections.js';
 import { Messages } from '../lib/collections.js';
+import { Students } from '../lib/collections.js';
 import { Mongo } from 'meteor/mongo'
 import './main.html';
+
 
 var user = "Marcus";
 
@@ -78,27 +81,14 @@ Template.body.helpers({
     end.setHours(23,59,59,999);
     currentStudent = Session.get("student");
 
-    if(Activities.find({createdAt: { $gt: new Date(start - (7*24*60*60*1000)) }}).count()!= 0){
-      Session.set("atotal", Activities.find({createdAt: { $gt: new Date(start - (7*24*60*60*1000)) }, student : currentStudent}).count());
-      console.log(Session.get("atotal"))
-      getTotal();
-    }
-    y = document.getElementById('aempty');
-    switch(Session.get("anewTime")){
+    switch(Session.get("newTime")){
 
       case '1':
-        if(Activities.find({createdAt: {$gte: start, $lt: end}}).count() == 0){
-          y.style.display = "block";
-          y.innerHTML = "No new Activities today! "
-        }
-        else{y.style.display = "none"}
-
         if(Session.get("subjectFilter") != null){
           return Activities.find (
             {
               createdAt: {$gte: start, $lt: end},
               subject  : Session.get("subjectFilter"),
-              student : currentStudent
             });
 
         } else{
@@ -106,39 +96,33 @@ Template.body.helpers({
           return Activities.find (
             {
               createdAt: {$gte: start, $lt: end},
-              student  : currentStudent
+              student : {$in : currentStudent}
             });
         }
 
 
       case '2':
-        y.style.display = "none";
-        Session.set("atotal", Activities.find({createdAt: { $gt: new Date(start - (7*24*60*60*1000)) }}).count());
-        getTotal();
         if(Session.get("subjectFilter") != null){
 
           return Activities.find (
               {
                 createdAt: { $gt: new Date(start - (7*24*60*60*1000)) },
                 subject  : Session.get("subjectFilter"),
-                student : currentStudent
+                student : {$in : currentStudent}
               }
           );
-        }else{return Activities.find({createdAt: { $gt: new Date(start - (7*24*60*60*1000)) }, student : currentStudent}, {sort : {createdAt: -1}})}
+        }else{return Activities.find({createdAt: { $gt: new Date(start - (7*24*60*60*1000)) }, student : {$in : currentStudent}}, {sort : {createdAt: -Session.get("order")}})}
 
       case '3':
-        y.style.display = "none";
         if(Session.get("subjectFilter") != null){
           return Activities.find ({subject  : Session.get("subjectFilter"), student : currentStudent});
           break;
-        }else{return Activities.find({student : currentStudent}, {sort : {createdAt: -1}})};
+        }else{return Activities.find({student : {$in : currentStudent}}, {sort : {createdAt: Session.get("order")}})};
 
       case '4':
-        y.style.display = "none";
-        return Activities.find ({ saved: true});
+        return Activities.find ({ saved: true, student : {$in : currentStudent}});
 
       case '5':
-        y.style.display = "none";
         dateSelected = document.getElementById('timePicker').value;
 
         document.getElementById('timePicker').value = "";
@@ -173,38 +157,75 @@ Template.body.helpers({
     start.setHours(0,0,0,0);
     var end = new Date();
     end.setHours(23,59,59,999);
-    Session.set("btotal", Badges.find({createdAt: { $gt: new Date(start - (7*24*60*60*1000)) }, student : currentStudent}).count())
-    getTotal();
-    x = document.getElementById('bempty');
-    switch(Session.get("bnewTime")){
+    switch(Session.get("newTime")){
 
       case '1':
-
-        if(Badges.find({createdAt: {$gte: start, $lt: end}}).count() == 0){
-          x.style.display = "block";
-          x.innerHTML = "No new Badges today!"
-        }
-
-        return Badges.find({createdAt: {$gte: start, $lt: end}});
+        return Badges.find({createdAt: {$gte: start, $lt: end}, student : {$in : currentStudent}});
 
       case '2':
-        x.style.display = "none";
 
-        return Badges.find({createdAt: { $gt: new Date(start - (7*24*60*60*1000)) }});
+        return Badges.find({createdAt: { $gt: new Date(start - (7*24*60*60*1000)) }, student : {$in : currentStudent}});
 
       case '3':
-        x.style.display = "none";
 
-        return Badges.find({});
+        return Badges.find({student : {$in : currentStudent}});
 
       case '4':
-        x.style.display = "none";
 
-        return Badges.find({"saved" : true});
+        return Badges.find({saved : true, student : {$in : currentStudent}});
 
     }
-  }
+    return Badges.find({});
+  },
 
+  hometasks(){
+    // var start =  new Date();
+    // start.setHours(0,0,0,0);
+    // var end = new Date();
+    // end.setHours(23,59,59,999);
+    // Session.set("btotal", Badges.find({createdAt: { $gt: new Date(start - (7*24*60*60*1000)) }, student : currentStudent}).count())
+    // getTotal();
+    // x = document.getElementById('bempty');
+    // // switch(Session.get("bnewTime")){
+    // //
+    // //   case '1':
+    // //
+    // //     if(Badges.find({createdAt: {$gte: start, $lt: end}}).count() == 0){
+    // //       x.style.display = "block";
+    // //       x.innerHTML = "No new Badges today!"
+    // //     }else{x.style.display = "none"}
+    // //
+    // //     return Badges.find({createdAt: {$gte: start, $lt: end}, student : currentStudent});
+    // //
+    // //   case '2':
+    // //     x.style.display = "none";
+    // //
+    // //     return Badges.find({createdAt: { $gt: new Date(start - (7*24*60*60*1000)) }, student : currentStudent});
+    // //
+    // //   case '3':
+    // //     x.style.display = "none";
+    // //
+    // //     return Badges.find({student : currentStudent});
+    // //
+    // //   case '4':
+    // //     x.style.display = "none";
+    // //
+    // //     return Badges.find({saved : true, student : currentStudent});
+    // //
+    // // }
+
+    return HomeTasks.find({});
+  },
+
+  applySettings(){
+    document.getElementById('settingsSubmit').addEvent = function(){
+      console.log(123)
+    }
+  },
+
+  students(){
+    return Students.find({});
+  }
 
 
 })
@@ -225,78 +246,82 @@ Template.message.events({
 })
 
 
-Template.body.onCreated(function(){
-  Session.set("anewTime", "1" );
-  Session.set("bnewTime", "1" );
+Template.body.onRendered(function(){
+  Session.set("newTime", "3" );
   Session.set("subjectFilter", null);
-  Session.set("student", "James");
+  Session.set("student", ["Marcus", "James"]);
+  document.getElementById('settingsSubmit').addEventListener("click", saveSettings, false)
+  document.getElementById('settingsSubmit').addEventListener("click", function(){
+
+    $('#studentsModal').modal('close');
+
+
+  }, false)
+  Session.set("order", "-1");
+
+
+});
+
+Template.activity.onRendered(function(){
+  $('.materialboxed').materialbox();
+  if(this.data.student == "James"){
+    this.firstNode.childNodes[1].childNodes[1].className = "card-content black-text"
+    this.firstNode.childNodes[1].childNodes[1].style = "background: linear-gradient(to right, white 95%, " + Students.findOne({name : this.data.student}).colour + " 50%);"
+  }else if(this.data.student == "Marcus"){
+    this.firstNode.childNodes[1].childNodes[1].className = "card-content black-text"
+    this.firstNode.childNodes[1].childNodes[1].style = "background: linear-gradient(to right, white 95%, " + Students.findOne({name : this.data.student}).colour + " 50%);"
+  }
+
+  if(this.data.img != ""){
+    this.firstNode.childNodes[1].childNodes[1].childNodes[9].children[0].src = this.data.img
+  }
+  else{this.firstNode.childNodes[1].childNodes[1].childNodes[9].children[0].style = "display: none"}
 
 
 
 });
 
-Template.ainputForm.events({
+Template.badge.onRendered(function(){
+  if(this.data.student == "James"){
+    this.firstNode.childNodes[1].childNodes[1].className = "card-content student1 black-text"
+  }else if(this.data.student == "Marcus"){
+    this.firstNode.childNodes[1].childNodes[1].className = "card-content student2 black-text"
+  }
+
+
+});
+
+Template.inputForm.events({
   'click #asubmitTime' : function(event, template){
-    console.log(event.target)
-    Session.set("anewTime", "")
+
+    var students = []
+    Session.set("student", [])
+    Session.set("newTime", "")
     if(document.getElementById("timePicker").value == ""){
       if(document.getElementById("r1").checked){
-        Session.set("anewTime", "1");
+        Session.set("newTime", "1");
       }
       else if(document.getElementById("r2").checked){
-        Session.set("anewTime", "2");
+        Session.set("newTime", "2");
       }
       else if(document.getElementById("r3").checked){
-        Session.set("anewTime", "3");
+        Session.set("newTime", "3");
       }
       else if(document.getElementById("r4").checked){
-        Session.set("anewTime", "4");
+        Session.set("newTime", "4");
       }
     }
     else if(document.getElementById("timePicker").value != ""){
-      Session.set("anewTime", "5");
+      Session.set("newTime", "5");
     }
-
-    if(document.getElementById("s1").checked){
-      Session.set("subjectFilter", "Maths");
-    }
-    else if(document.getElementById("s2").checked){
-      Session.set("subjectFilter", "English");
-    }
-    else if(document.getElementById("s3").checked){
-      Session.set("subjectFilter", "PE");
-    }
-    else if(document.getElementById("s4").checked){
-      Session.set("subjectFilter", "Science");
-    }
-    else{Session.set("subjectFilter", null)};
-
-
-
-  }
-})
-
-Template.binputForm.events({
-  'click #bsubmitTime' : function(event, template){
-    console.log(event.target)
-    Session.set("bnewTime", "")
-    if(document.getElementById("timePicker").value == ""){
-      if(document.getElementById("b1").checked){
-        Session.set("bnewTime", "1");
-      }
-      else if(document.getElementById("b2").checked){
-        Session.set("bnewTime", "2");
-      }
-      else if(document.getElementById("b3").checked){
-        Session.set("bnewTime", "3");
-      }
-      else if(document.getElementById("b4").checked){
-        Session.set("bnewTime", "4");
+    for(i = 0; i < 2; i++){
+      if (document.getElementsByClassName('studentCheck')[i].checked){
+        students.push(document.getElementsByClassName('studentCheck')[i].value)
       }
     }
-    else if(document.getElementById("timePicker").value != ""){
-      Session.set("bnewTime", "5");
-    }
+    Session.set("student", students);
+
+
   }
 })
 
@@ -334,9 +359,29 @@ Template.badge.events({
 
 });
 
-function getTotal(){
-  x = document.getElementById('activitiesTotal');
-  y = document.getElementById('badgesTotal');
-  x.innerHTML = Session.get("atotal");
-  y.innerHTML = Session.get("btotal");
+Template.student.onRendered(function(){
+
+  this.lastNode.childNodes[1].childNodes[1].id = this.data._id._str
+  console.log(this.data._id)
+  this.lastNode.childNodes[1].childNodes[1].addEventListener("change", function(){
+
+    Students.update(
+      {_id: new Mongo.ObjectID(this.id)},
+      {
+        $set: {"colour": this.value}
+      }
+    )
+
+
+
+
+  }, false)
+
+});
+
+function saveSettings(){
+  if(document.getElementById('s2').checked){
+    Session.set("order", "1");
+
+  }else{Session.set("order", "-1")}
 }
