@@ -1,14 +1,21 @@
 body {
   /* font-family: Google Sans; */
-  background-color: #dbdbdb;
+  background-color: #f2f2f2;
 }
 *{
-
   font-family: 'Lato', sans-serif;
 }
 
+
+
 .grey{
-  background-color: #dbdbdb !important;
+  background-color: #f2f2f2 !important;
+}
+
+h4{
+  font-size: 28px;
+  font-weight: bolder;
+  padding-top: 0.5em;
 }
 
 nav > h2{
@@ -21,10 +28,21 @@ nav > h2{
 section {
   padding-left: 10px;
   padding-right: 10px;
-  margin-top: 12%;
+  margin-bottom: 6em;
+  top: 0;
 }
 
+.divider{
+  margin-top: 0.7em;
+  height: 2em;
+  background-color: #f2f2f2;
+  color: black;
+  padding-left: 1%;
+}
 
+.white{
+  background-color: #f2f2f2;
+}
 
 nav > img{
   width: 100px;
@@ -52,26 +70,46 @@ nav > div > .btn{
 
 
 
+
+
 h3{
   font-size: 30px;
 }
 
 
+.chips-initial{
+}
 
+.chip.selected{
+  background-color: #ffb300 !important;
+}
 
 form {
   padding-bottom: 5%;
+  padding-left: 0.5em;
+}
+
+form#radio > p{
+  padding-left: 0.5em;
 }
 
 .leftbtn {
   float: left;
-  margin-top: 10px;
-  margin-left: 3%;
+  margin-top: 0.5em;
+  margin-left: 15%;
 }
 .rightbtn{
   float:right;
-  margin-top: 10px;
-  margin-right: 3%;
+  margin-top: 0.5em;
+  margin-right: 15%;
+}
+
+.lever{
+  right: -20%;
+}
+
+.switch{
+  padding-top: 1em;
 }
 
 .card-stacked.expand {
@@ -80,26 +118,50 @@ form {
 
 }
 
-.tabs.tabs-transparent .tab a, .tabs.tabs-transparent .tab.disabled a, .tabs.tabs-transparent .tab.disabled a:hover{
-  color: rgb(33, 150, 243, 0.5);
+/* .tabs.tabs-transparent .tab a, .tabs.tabs-transparent .tab.disabled a, .tabs.tabs-transparent .tab.disabled a:hover{
+  color: #fff;
 }
 
 .tabs .tab a:focus, .tabs .tab a:focus.active{
-  color: #2196F3;
+  color: #fff;
   background-color: inherit;
 }
 .tabs.tabs-transparent .tab a:hover, .tabs.tabs-transparent .tab a.active{
-  color: #2196F3;
+  color: #fff;
 }
 .tabs.tabs-transparent .indicator{
-  background-color: #2196F3;
+  background-color: #fff;
 }
 .tabs.tabs-transparent{
-  box-shadow: 0px 4px 6px -2px rgba(0,0,0,0.22);
+  box-shadow: 4px 0px 6px 0px rgba(0,0,0,0.22);
+  bottom: 0;
+  position: fixed;
+  height: 8%;
+  padding-top: 0.5em;
+} */
 
+ul.tabs{
+  background-color: transparent;
 }
+
+
 .tabs .tab a{
-  font-size: 15px;
+  color: black;
+}
+
+.tabs .tab a:hover, .tabs .tab a.active{
+  color: black;
+}
+.tabs .tab a:focus, .tabs .tab a:focus.active{
+  background-color: transparent;
+}
+
+.tabs .indicator{
+  background-color: black;
+}
+
+label.settings{
+  font-size : 1em;
 }
 
 img.responsive-img, video.responsive-video{
@@ -113,64 +175,199 @@ img.responsive-img, video.responsive-video{
 
 }
 
-.card .card-content p{
-  color: #006494;
-}
+
 
 
 
 .card.horizontal{
   border-radius: 8px;
+  box-shadow: 0 0 0 0;
 }
 
 .card.horizontal .card-stacked .card-content{
-  border-radius: 8px 8px 0 0;
+  border-radius: 8px 8px 8px 8px;
 }
 .card .card-action:last-child{
   border-radius: 0 0 8px 8px;
 
 }
 
-.filterButton{
-  width: 78%;
-  /* height: 3em;
-  font-size: 1em;
-  font-weight: bolder;
-  padding-top: 0.5%;
-  border-radius: 20px; */
-  color: white;
+div.card-content{
+  padding-left: 2%;
+  padding-bottom: 5%;
+}
+
+.mainButton{
+  width: 48%;
+  color: black;
+  bottom: 5%;
 
 }
 
-.favButton{
-  width: 20%;
-  /* height: 3em;
-  font-size: 1em;
-  font-weight: bolder;
-  padding-top: 0.5%;
-  border-radius: 20px; */
+.secondayButton{
+  width: 48%;
   float: right;
+  bottom: 5%;
 }
 
 .rounded{
   height: 3em;
   font-size: 1em;
   font-weight: bolder;
-  padding-top: 0.5%;
   border-radius: 20px;
+  line-height: 3em;
+  bottom: 0;
 }
 
 .centerBtn{
-  width: 40%;
-  margin-left: 30%;
-  margin-right: 30%
+  width: 100%;
+
 }
+
+#aonly{
+  font-style: italic;
+  font-weight: lighter;
+}
+
+[type="radio"]+span:before{
+
+  height: 25px;
+  width: 25px;
+}
+
+[type="radio"]:checked+span:after, [type="radio"].with-gap:checked+span:after {
+
+  background-color: #ffb300;
+  height: 25px;
+  width: 25px;
+}
+
+[type="radio"]:checked+span:after, [type="radio"].with-gap:checked+span:before, [type="radio"].with-gap:checked+span:after {
+
+  border : none;
+  height: 25px;
+  width: 25px;
+}
+
+[type="radio"]:not(:checked)+span, [type="radio"]:checked+span{
+  line-height: 2.5em;
+}
+
+[type="checkbox"].filled-in:checked+span:not(.lever):after{
+  border : none;
+    background-color: #ffb300;
+}
+
+.switch label input[type=checkbox]:checked+.lever:after{
+  background-color: #ffb300;
+}
+
+.switch label input[type=checkbox]:checked+.lever{
+  background-color: #c68400;
+}
+
+input.colour{
+  height: 50px;
+  width: 50px;
+}
+
+
+
+.centerFab{
+  margin-right: 37%;
+  margin-bottom: 1em;
+}
+
+.navbar-fixed{
+  bottom: 0;
+  position: fixed;
+  height: 5em;
+}
+
+nav {
+  height : 6em;
+}
+
+.student1{
+  background: linear-gradient(to right, white 95%, #79D18A 50%);
+  /* background-color: #79D18A; */
+}
+
+.student2{
+  background : linear-gradient(to right, white 95%, #3A86FF 50%);
+  /* background-color: #3A86FF; */
+}
+
+div.chip > i.material-icons{
+  display: none;
+}
+
+.chips .input {
+  display: none;
+}
+
+.chips{
+  border-bottom: none;
+}
+
+
+
 .modal.open{
   border-radius: 8px;
   max-height: 100%;
   height: fit-content;
   max-width: 100%;
   width: 85%;
+}
+
+#FilterModal{
+  padding-top: 5em;
+  padding-left: 10%;
+  padding-right: 10%;
+  max-height: 100%;
+  height: 100%;
+  border-radius: 0 0 0 0;
+  z-index: 1011;
+  bottom: 0 !important;
+  background-color: #f2f2f2;
+}
+
+#FilterModal.velocity-animating{
+  bottom: 0;
+  background-color: #f2f2f2;
+}
+
+#settingsModal{
+  padding-top: 5em;
+  padding-left: 10%;
+  padding-right: 10%;
+  max-height: 100%;
+  height: 100%;
+  border-radius: 0 0 0 0;
+  z-index: 1011;
+  bottom: 0 !important;
+  background-color: #f2f2f2;
+}
+
+#studentsModal{
+  padding-top: 5em;
+  padding-left: 10%;
+  padding-right: 10%;
+  max-height: 100%;
+  height: 100%;
+  border-radius: 0 0 0 0;
+  z-index: 1011;
+  bottom: 0 !important;
+  background-color: #f2f2f2;
+}
+
+#settingsModal.velocity-animating{
+  bottom: 0;
+  background-color: #f2f2f2;
+}
+
+.modal.velocity-animating{
+  border-radius: 8px;
 }
 
 
@@ -186,13 +383,37 @@ img.responsive-img, video.responsive-video{
 
 }
 
-#favButton > i.material-icons{
+.priBlue{
+  background-color: #384a6d;
+}
+
+div#menu.modal.bottom-sheet{
+  background-color: #0a2342;
+  box-shadow: 0 0 0 0;
+}
+
+div#menu.modal.bottom-sheet.open{
+  background-color: #0a2342;
+  box-shadow: 0 0 0 0;
+}
+
+
+
+#aempty , #bempty {
+  font-size: 25px;
+  margin-left: 15%;
+  margin-top : 40%;
+}
+
+ul> a > i.material-icons{
   color: black;
 }
 
 #favButton.saved > i.material-icons{
   color: red;
 }
+
+
 
 
 
