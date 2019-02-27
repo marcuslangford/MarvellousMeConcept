@@ -74,7 +74,6 @@ Template.body.helpers({
   },
 
   activities(){
-
     var start =  new Date();
     start.setHours(0,0,0,0);
     var end = new Date();
@@ -251,8 +250,9 @@ Template.body.onRendered(function(){
   Session.set("subjectFilter", null);
   Session.set("student", ["Marcus", "James"]);
   document.getElementById('settingsSubmit').addEventListener("click", saveSettings, false)
-  document.getElementById('settingsSubmit').addEventListener("click", function(){
-
+  document.getElementById('studentsSubmit').addEventListener("click", function(){
+    Session.set("newTime", temp);
+    console.log(temp);
     $('#studentsModal').modal('close');
 
 
@@ -264,13 +264,9 @@ Template.body.onRendered(function(){
 
 Template.activity.onRendered(function(){
   $('.materialboxed').materialbox();
-  if(this.data.student == "James"){
-    this.firstNode.childNodes[1].childNodes[1].className = "card-content black-text"
-    this.firstNode.childNodes[1].childNodes[1].style = "background: linear-gradient(to right, white 95%, " + Students.findOne({name : this.data.student}).colour + " 50%);"
-  }else if(this.data.student == "Marcus"){
-    this.firstNode.childNodes[1].childNodes[1].className = "card-content black-text"
-    this.firstNode.childNodes[1].childNodes[1].style = "background: linear-gradient(to right, white 95%, " + Students.findOne({name : this.data.student}).colour + " 50%);"
-  }
+  getColour(Template.instance());
+
+
 
   if(this.data.img != ""){
     this.firstNode.childNodes[1].childNodes[1].childNodes[9].children[0].src = this.data.img
@@ -362,18 +358,17 @@ Template.badge.events({
 Template.student.onRendered(function(){
 
   this.lastNode.childNodes[1].childNodes[1].id = this.data._id._str
-  console.log(this.data._id)
   this.lastNode.childNodes[1].childNodes[1].addEventListener("change", function(){
-
     Students.update(
       {_id: new Mongo.ObjectID(this.id)},
       {
         $set: {"colour": this.value}
       }
     )
-
-
-
+    tempId = "";
+    temp = Session.get("newTime");
+    console.log(temp);
+    Session.set("newTime", "0");
 
   }, false)
 
@@ -384,4 +379,19 @@ function saveSettings(){
     Session.set("order", "1");
 
   }else{Session.set("order", "-1")}
+
+  if(document.getElementById('hideImg').checked){
+    //no images blah
+  }
+  if(document.getElementById('hideImg').checked){
+    //colour whole card
+  }
+}
+
+function getColour(a){
+
+  b = Students.findOne({"name" : a.data.student})
+
+  a.firstNode.childNodes[1].childNodes[1].style = "background: linear-gradient(to right, white 95%, " + b.colour + " 50%);"
+
 }
