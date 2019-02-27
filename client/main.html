@@ -159,9 +159,9 @@
 
   <script>
     $(document).ready(function(){
-      $('.modal').modal({});
-
+      $('.modal').modal();
     });
+
 
     $(document).ready(function(){
       $('tabs').tabs();
@@ -222,7 +222,7 @@
 
     <p>
       <label>
-        <input id = "r1" name="group1" type="radio" checked />
+        <input id = "r1" name="group1" type="radio" />
         <span>Today</span>
       </label>
     </p>
@@ -234,7 +234,7 @@
     </p>
     <p>
       <label>
-        <input id = "r3" name="group1" type="radio" />
+        <input id = "r3" name="group1" type="radio" checked />
         <span>All</span>
       </label>
     </p>
@@ -328,10 +328,7 @@
 </template>
 
 <template name = "student">
-  <!-- <div>
-      <input id = {{name}} class = "colour" type="color" value={{colour}}  >
-      <label class = "settings">{{name}}</label>
-  </div> -->
+
 
   <li class="collection-item avatar">
     <div>
