@@ -324,6 +324,10 @@ div.chip > i.material-icons{
   width: 85%;
 }
 
+.card.horizontal.fade{
+  transition: 0.3s ease
+}
+
 #FilterModal{
   padding-top: 5em;
   padding-left: 10%;
@@ -331,7 +335,7 @@ div.chip > i.material-icons{
   max-height: 100%;
   height: 100%;
   border-radius: 0 0 0 0;
-  z-index: 1011;
+  z-index: 1013 !important;
   bottom: 0 !important;
   background-color: #f2f2f2;
 }
@@ -348,10 +352,11 @@ div.chip > i.material-icons{
   max-height: 100%;
   height: 100%;
   border-radius: 0 0 0 0;
-  z-index: 1011;
+  z-index: 1013 !important;
   bottom: 0 !important;
   background-color: #f2f2f2;
 }
+
 
 #studentsModal{
   padding-top: 5em;
@@ -360,7 +365,7 @@ div.chip > i.material-icons{
   max-height: 100%;
   height: 100%;
   border-radius: 0 0 0 0;
-  z-index: 1011;
+  z-index: 1013 !important;
   bottom: 0 !important;
   background-color: #f2f2f2;
 }
@@ -374,6 +379,23 @@ div.chip > i.material-icons{
   border-radius: 8px;
 }
 
+.expanded {
+  position: absolute;
+  top: 30%;
+  bottom: 30%;
+  z-index: 1011;
+  transition: 0.3s ease
+}
+
+.topToast{
+  top: 0 !important;
+  position: fixed;
+}
+
+.selected{
+  background: linear-gradient(to right, #006fff26 95%, rgb(54, 137, 228) 50%) !important;
+
+}
 
 .modal.bottom-sheet{
   border-radius: 8px 8px 0 0;
