@@ -24,3 +24,5 @@ mobile-status-bar@1.0.14
 session@1.2.0
 momentjs:moment
 materialize:materialize
+hedcet:touch-swipe
+percolate:momentum
