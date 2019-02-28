@@ -13,8 +13,8 @@ import './main.html';
 
 
 var user = "Marcus";
-
-
+var selected = [];
+console.log(selected);
 
 Template.body.helpers({
 
@@ -245,11 +245,17 @@ Template.message.events({
 })
 
 
+
+
 Template.body.onRendered(function(){
-  Session.set("newTime", "3" );
+
+  Session.set("newTime", "1" );
   Session.set("subjectFilter", null);
   Session.set("student", ["Marcus", "James"]);
+  Session.set("selected", []);
+
   document.getElementById('settingsSubmit').addEventListener("click", saveSettings, false)
+  document.getElementById('delete').addEventListener("click", removeSelected, false)
   document.getElementById('studentsSubmit').addEventListener("click", function(){
     Session.set("newTime", temp);
     console.log(temp);
@@ -265,16 +271,9 @@ Template.body.onRendered(function(){
 Template.activity.onRendered(function(){
   $('.materialboxed').materialbox();
   getColour(Template.instance());
-
-
-
-  if(this.data.img != ""){
-    this.firstNode.childNodes[1].childNodes[1].childNodes[9].children[0].src = this.data.img
+  if(this.data.img == ""){
+    this.firstNode.childNodes[1].childNodes[1].childNodes[9].children[0].style = "display: none"
   }
-  else{this.firstNode.childNodes[1].childNodes[1].childNodes[9].children[0].style = "display: none"}
-
-
-
 });
 
 Template.badge.onRendered(function(){
@@ -328,15 +327,40 @@ Template.registerHelper('formatDate', function(date) {
 
 
 Template.activity.events({
-  'click .save-activity': function(){
+  // 'click .save-activity': function(){
+  //
+  //   Activities.update(
+  //     {_id: this._id},
+  //     {
+  //       $set: {"saved": true}
+  //     }
+  //   )
+  //   return false;
+  // }
 
-    Activities.update(
-      {_id: this._id},
-      {
-        $set: {"saved": true}
-      }
-    )
-    return false;
+  'click .open': function(){
+
+    if(selected == ""){
+      document.getElementById('delete').style = "display: block";
+      document.getElementById('filter').style = "display: none"
+
+    }else if(selected.length == 1 && event.target.className == "open selected card-content white"){
+      document.getElementById('delete').style = "display: none";
+      document.getElementById('filter').style = "display: block"
+    }
+    console.log(event.target.className)
+    if(event.target.className == "open selected card-content white"){
+      event.target.className = "open card-content white"
+      selected.pop(this);
+      console.log(selected);
+    }else{
+      event.target.className = "open selected card-content white"
+      selected.push(this);
+      console.log(selected);
+    }
+
+
+
   }
 
 });
@@ -367,7 +391,6 @@ Template.student.onRendered(function(){
     )
     tempId = "";
     temp = Session.get("newTime");
-    console.log(temp);
     Session.set("newTime", "0");
 
   }, false)
@@ -383,7 +406,7 @@ function saveSettings(){
   if(document.getElementById('hideImg').checked){
     //no images blah
   }
-  if(document.getElementById('hideImg').checked){
+  if(document.getElementById('colourCard').checked){
     //colour whole card
   }
 }
@@ -394,4 +417,29 @@ function getColour(a){
 
   a.firstNode.childNodes[1].childNodes[1].style = "background: linear-gradient(to right, white 95%, " + b.colour + " 50%);"
 
+}
+
+function removeSelected(){
+  num = selected.length
+  for(i = 0; i < num; i++){
+    Activities.remove(
+      {_id: selected[i]._id}
+    )
+  }
+  var $toastContent = $('<span>'+num+' events deleted</span>').add($('<button id = "undo" class="btn-flat toast-action">Undo</button>'));
+  Materialize.toast($toastContent, 10000, 'topToast');
+  document.getElementById('undo').addEventListener("click", undoRemove, false)
+  tempSelected = selected;
+  selected = [];
+  document.getElementById('delete').style = "display: none";
+  document.getElementById('filter').style = "display: block"
+}
+
+function undoRemove(){
+  console.log(tempSelected);
+  for(i = 0; i < num; i++){
+    Activities.insert(
+      {"_id" : tempSelected[i]._id, "subject" : tempSelected[i].subject, "text" : tempSelected[i].text, "createdAt": tempSelected[i].createdAt, "saved" : false, "student" : tempSelected[i].student, "img" : tempSelected[i].img}
+    )
+  }
 }
