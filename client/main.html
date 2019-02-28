@@ -20,9 +20,14 @@
     <nav class = "priBlue">
       <a class = "modal-trigger rightbtn" ><i class="material-icons">search</i></a>
       <a class = "modal-trigger leftbtn" href="#menu"><i class="material-icons">expand_less</i></a>
-      <div class="fixed-action-btn centerFab">
+      <div id = "filter" class="fixed-action-btn centerFab">
         <a class="btn-floating btn-large amber darken-1 modal-trigger animated" href="#FilterModal">
           <i class="material-icons">sort</i>
+        </a>
+      </div>
+      <div id = "delete" class="fixed-action-btn centerFab" style = "display : none">
+        <a class="btn-floating btn-large amber darken-1 animated" href="#!">
+          <i class="material-icons">delete</i>
         </a>
       </div>
     </nav>
@@ -77,14 +82,14 @@
       <div class="switch">
         <label class = "settings">
           Hide Images in Events
-          <input type="checkbox">
+          <input id = "hideImg" type="checkbox">
           <span class="lever"></span>
         </label>
       </div>
       <div class="switch">
         <label class = "settings">
           Colour the entire card
-          <input type="checkbox">
+          <input id = "colourCard" type="checkbox">
           <span class="lever"></span>
         </label>
       </div>
@@ -134,16 +139,20 @@
     <div id="modal2" class="modal">
        <div class="modal-content">
          <ul class = "collection" >
-           {{#each notifications}}
+           <!-- {{#each notifications}}
              {{> notification}}
-           {{/each}}
+           {{/each}} -->
          </ul>
        </div>
     </div>
+
     <div class = "divider">Activities</div>
-    {{#each activities}}
-      {{> activity}}
-    {{/each}}
+    {{#momentum plugin='fade'}}
+      {{#each activities}}
+        {{> activity}}
+      {{/each}}
+    {{/momentum}}
+
     <div class = "divider">Badges</div>
     {{#each badges}}
       {{> badge}}
@@ -186,20 +195,34 @@
      closeOnClick: true
    });
    $('.chips-initial').material_chip({
-    data: [{
-      tag: 'Maths',
-    }, {
-      tag: 'Science',
-    }, {
-      tag: 'Art',
-    },{
-      tag: 'Music',
-    },{
-      tag: 'PE',
-    },{
-      tag: 'History',
-    }],
-  });
+      data: [{
+        tag: 'Maths',
+      }, {
+        tag: 'Science',
+      }, {
+        tag: 'Art',
+      },{
+        tag: 'Music',
+      },{
+        tag: 'PE',
+      },{
+        tag: 'History',
+      }],
+    });
+
+    $(function() {
+      //Enable swiping...
+      $("#test").swipe( {
+        //Generic swipe handler for all directions
+        swipe:function(event, direction, distance, duration, fingerCount, fingerData) {
+          console.log(123)
+        },
+        //Default is 75px, set to 0 for demo so any distance triggers swipe
+         threshold:0
+      });
+    });
+
+
 
 
   </script>
@@ -272,19 +295,20 @@
 </template>
 
 <template name = "activity">
-  <div class="card horizontal fade">
-    <div class="card-stacked">
-      <div class="card-content white">
-        <p class = "subject" style = "display: inline-block">{{subject}}</p> - <p class = "light" style = "display: inline-block">{{formatDate createdAt}}</p>
-        <a href = "#"><i class="save-activity material-icons right" style = "display: inline-block ">favorite</i></a>
-        <p>{{text}}</p>
-        <img class="materialboxed" width="150" src="" style = "display: inline-block">
+
+    <div  class="card horizontal">
+      <div class="card-stacked">
+        <div class="open card-content white">
+          <p class = "subject" style = "display: inline-block">{{subject}}</p> - <p class = "light" style = "display: inline-block">{{formatDate createdAt}}</p>
+          <a href = "#"></a>
+          <p>{{text}}</p>
+          <img class="materialboxed" width="150" src="{{img}}" style = "display: inline-block">
+
+        </div>
+
 
       </div>
-
-
     </div>
-  </div>
 
 </template>
 
