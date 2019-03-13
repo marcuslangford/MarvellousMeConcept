@@ -1,0 +1,10 @@
+db.activities.insertMany([
+  {"subject" : "Maths", "text" : "Marcus Learned Addition today, he practiced adding numbers together blah using blah and it went well and stuff today yes but thats good becasue it means he is able to add numbers now and decide when to add stuff together and stuff", "createdAt": new Date(), "saved" : false, "student" : "Marcus", "img" : ""},
+  {"subject" : "Science", "text" : "Marcus Learned about plants", "createdAt": new Date(), "saved" : false, "student" : "Marcus", "img" : ""},
+  {"subject" : "Science", "text" : "James learned about chemistry", "createdAt": new Date(), "saved" : false, "student" : "James", "img" : ""},
+  {"subject" : "Art", "text" : "Marcus Painted a picture", "createdAt": new Date(), "saved" : false, "student" : "Marcus", "img" : "image1.jpg"},
+  {"subject" : "PE", "text" : "James played football", "createdAt": new Date(), "saved" : false, "student" : "James", "img" : ""},
+  {"subject" : "History", "text" : "Marcus Learned about World War 2", "createdAt": new Date(), "saved" : false, "student" : "Marcus", "img" : ""},
+  {"subject" : "Sports Day", "text" : "Marcus was in sports day today", "createdAt": new Date(), "saved" : false, "student" : "Marcus", "img" : "image2.jpg"},
+  {"subject" : "Music", "text" : "James learned piano ", "createdAt": new Date(), "saved" : false, "student" : "James", "img" : ""},
+])
