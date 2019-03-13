@@ -19,7 +19,7 @@
   <div class = "navbar-fixed" style = "bottom: 0; position: fixed;" >
     <nav class = "priBlue">
       <a class = "modal-trigger rightbtn" ><i class="material-icons">search</i></a>
-      <a class = "modal-trigger leftbtn" href="#menu"><i class="material-icons">expand_less</i></a>
+      <a class = "modal-trigger leftbtn" href="#menuModal"><i class="material-icons">expand_less</i></a>
       <div id = "filter" class="fixed-action-btn centerFab">
         <a class="btn-floating btn-large amber darken-1 modal-trigger animated" href="#FilterModal">
           <i class="material-icons">sort</i>
@@ -44,7 +44,7 @@
 
   <section>
     <div id = "FilterModal" class = "modal full bottom-sheet">
-
+      <a class = "right" href="#!" onclick="$('#FilterModal').modal('close');"><i style = "color : black" class="material-icons">clear</i></a>
       {{> inputForm}}
 
     </div>
@@ -125,7 +125,7 @@
       </div>
     </div>
 
-    <div id="menu" class="modal bottom-sheet">
+    <div id="menuModal" class="modal bottom-sheet">
      <div class="modal-content">
        <ul>
          <li><a class = "modal-trigger white-text" href="#messagesModal"><i class="material-icons">markunread</i>Messages</a></li>
@@ -145,8 +145,9 @@
          </ul>
        </div>
     </div>
-
+    <h1 id = "title">Today</h1>
     <div class = "divider">Activities</div>
+
     {{#momentum plugin='fade'}}
       {{#each activities}}
         {{> activity}}
@@ -210,18 +211,9 @@
       }],
     });
 
-    $(function() {
-      //Enable swiping...
-      $("#test").swipe( {
-        //Generic swipe handler for all directions
-        swipe:function(event, direction, distance, duration, fingerCount, fingerData) {
-          console.log(123)
-        },
-        //Default is 75px, set to 0 for demo so any distance triggers swipe
-         threshold:0
-      });
+    $(window).scroll(function(event){
+      didScroll = true;
     });
-
 
 
 
@@ -245,7 +237,7 @@
 
     <p>
       <label>
-        <input id = "r1" name="group1" type="radio" />
+        <input id = "r1" name="group1" type="radio" checked />
         <span>Today</span>
       </label>
     </p>
@@ -257,7 +249,7 @@
     </p>
     <p>
       <label>
-        <input id = "r3" name="group1" type="radio" checked />
+        <input id = "r3" name="group1" type="radio" />
         <span>All</span>
       </label>
     </p>
@@ -295,21 +287,16 @@
 </template>
 
 <template name = "activity">
-
     <div  class="card horizontal">
       <div class="card-stacked">
-        <div class="open card-content white">
+        <div id = "select" class="open card-content white">
           <p class = "subject" style = "display: inline-block">{{subject}}</p> - <p class = "light" style = "display: inline-block">{{formatDate createdAt}}</p>
           <a href = "#"></a>
           <p>{{text}}</p>
           <img class="materialboxed" width="150" src="{{img}}" style = "display: inline-block">
-
         </div>
-
-
       </div>
     </div>
-
 </template>
 
 <template name = "homeTask">
@@ -343,8 +330,8 @@
 <template name = "message">
    <li>
      <div class="collapsible-header">
-       New {{type}}
-       <!-- <a href = "#"><i class="delete-message material-icons right ">close</i></a> -->
+       {{type}}
+       <a href = "#"><i class="delete-message material-icons right ">close</i></a>
      </div>
      <div class="collapsible-body"><span>{{content}}</span></div>
 
