@@ -114,7 +114,7 @@ Template.body.helpers({
 
       case '3':
         if(Session.get("subjectFilter") != null){
-          return Activities.find ({subject  : Session.get("subjectFilter"), student : currentStudent});
+          return Activities.find ({subject  : Session.get("subjectFilter"), student : {$in : currentStudent}});
           break;
         }else{return Activities.find({student : {$in : currentStudent}}, {sort : {createdAt: Session.get("order")}})};
 
@@ -253,12 +253,11 @@ Template.body.onRendered(function(){
   Session.set("subjectFilter", null);
   Session.set("student", ["Marcus", "James"]);
   Session.set("selected", []);
-
+  Session.set("showImg", true);
   document.getElementById('settingsSubmit').addEventListener("click", saveSettings, false)
   document.getElementById('delete').addEventListener("click", removeSelected, false)
   document.getElementById('studentsSubmit').addEventListener("click", function(){
     Session.set("newTime", temp);
-    console.log(temp);
     $('#studentsModal').modal('close');
 
 
@@ -266,12 +265,13 @@ Template.body.onRendered(function(){
   Session.set("order", "-1");
 
 
+
 });
 
 Template.activity.onRendered(function(){
   $('.materialboxed').materialbox();
   getColour(Template.instance());
-  if(this.data.img == ""){
+  if(this.data.img == "" || Session.get("showImg") == false){
     this.firstNode.childNodes[1].childNodes[1].childNodes[9].children[0].style = "display: none"
   }
 });
@@ -294,12 +294,15 @@ Template.inputForm.events({
     Session.set("newTime", "")
     if(document.getElementById("timePicker").value == ""){
       if(document.getElementById("r1").checked){
+        document.getElementById('title').innerHTML = "Today"
         Session.set("newTime", "1");
       }
       else if(document.getElementById("r2").checked){
+        document.getElementById('title').innerHTML = "This Week"
         Session.set("newTime", "2");
       }
       else if(document.getElementById("r3").checked){
+        document.getElementById('title').innerHTML = "All"
         Session.set("newTime", "3");
       }
       else if(document.getElementById("r4").checked){
@@ -315,13 +318,30 @@ Template.inputForm.events({
       }
     }
     Session.set("student", students);
+    if(document.getElementsByClassName('chip selected').length != 0){
+
+      Session.set("subjectFilter", document.getElementsByClassName('chip selected')[0].childNodes[0].textContent)
+    }
+    else{Session.set("subjectFilter", null)}
 
 
   }
 })
 
 Template.registerHelper('formatDate', function(date) {
-  return moment(date).format('MM-DD-YYYY');
+
+
+  switch(Session.get("newTime")){
+
+    case '1':
+
+      return moment(date).startOf('hour').fromNow();
+
+    case '2':
+      return moment(date).format('dddd'+' MM-DD-YYYY');
+    case '3':
+      return moment(date).format('MM-DD-YYYY');
+  }
 });
 
 
@@ -340,7 +360,8 @@ Template.activity.events({
 
   'click .open': function(){
 
-    if(selected == ""){
+
+    if(selected == "" && event.target.id == "select"){
       document.getElementById('delete').style = "display: block";
       document.getElementById('filter').style = "display: none"
 
@@ -348,16 +369,17 @@ Template.activity.events({
       document.getElementById('delete').style = "display: none";
       document.getElementById('filter').style = "display: block"
     }
-    console.log(event.target.className)
-    if(event.target.className == "open selected card-content white"){
-      event.target.className = "open card-content white"
-      selected.pop(this);
-      console.log(selected);
-    }else{
-      event.target.className = "open selected card-content white"
-      selected.push(this);
-      console.log(selected);
-    }
+
+    if(event.target.id == "select"){
+      if(event.target.className == "open selected card-content white"){
+        event.target.className = "open card-content white"
+        selected.pop(this);
+      }else{
+        event.target.className = "open selected card-content white"
+        selected.push(this);
+      }
+     }
+
 
 
 
@@ -404,7 +426,7 @@ function saveSettings(){
   }else{Session.set("order", "-1")}
 
   if(document.getElementById('hideImg').checked){
-    //no images blah
+    Session.set("showImg", false);
   }
   if(document.getElementById('colourCard').checked){
     //colour whole card
@@ -412,7 +434,6 @@ function saveSettings(){
 }
 
 function getColour(a){
-
   b = Students.findOne({"name" : a.data.student})
 
   a.firstNode.childNodes[1].childNodes[1].style = "background: linear-gradient(to right, white 95%, " + b.colour + " 50%);"
@@ -442,4 +463,9 @@ function undoRemove(){
       {"_id" : tempSelected[i]._id, "subject" : tempSelected[i].subject, "text" : tempSelected[i].text, "createdAt": tempSelected[i].createdAt, "saved" : false, "student" : tempSelected[i].student, "img" : tempSelected[i].img}
     )
   }
+  var $toastContent = $('<span>'+num+' events re-added </span>')
+  Materialize.toast($toastContent, 10000, 'topToast');
+  var toastElement = $('.toast').first()[0];
+  var toastInstance = toastElement.M_Toast;
+  toastInstance.remove();
 }
