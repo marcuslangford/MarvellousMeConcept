@@ -6,14 +6,29 @@ body {
   font-family: 'Lato', sans-serif;
 }
 
+.chips .chip.selected{
+  background: none !important;
+  background-color: #ffb300 !important;
+}
 
+.materialboxed.active{
+  z-index: 1014 !important;
+}
+
+#materialbox-overlay{
+  z-index: 1014 !important;
+}
 
 .grey{
   background-color: #f2f2f2 !important;
 }
 
 
-
+h1{
+  font-size: 2rem !important;
+  margin: 0.67em 0;
+  font-weight: bolder;
+}
 
 h4{
   font-size: 28px;
@@ -121,28 +136,6 @@ form#radio > p{
 
 }
 
-/* .tabs.tabs-transparent .tab a, .tabs.tabs-transparent .tab.disabled a, .tabs.tabs-transparent .tab.disabled a:hover{
-  color: #fff;
-}
-
-.tabs .tab a:focus, .tabs .tab a:focus.active{
-  color: #fff;
-  background-color: inherit;
-}
-.tabs.tabs-transparent .tab a:hover, .tabs.tabs-transparent .tab a.active{
-  color: #fff;
-}
-.tabs.tabs-transparent .indicator{
-  background-color: #fff;
-}
-.tabs.tabs-transparent{
-  box-shadow: 4px 0px 6px 0px rgba(0,0,0,0.22);
-  bottom: 0;
-  position: fixed;
-  height: 8%;
-  padding-top: 0.5em;
-} */
-
 ul.tabs{
   background-color: transparent;
 }
@@ -181,14 +174,14 @@ img.responsive-img, video.responsive-video{
 
 
 
-
 .card.horizontal{
   border-radius: 8px;
   box-shadow: 0 0 0 0;
+  margin-bottom: 10px;
 }
 
 .card.horizontal .card-stacked .card-content{
-  border-radius: 8px 8px 8px 8px;
+  border-radius: 6px;
 }
 .card .card-action:last-child{
   border-radius: 0 0 8px 8px;
@@ -388,7 +381,10 @@ div.chip > i.material-icons{
 }
 
 .topToast{
-  top: 0 !important;
+  border-radius: 6px;
+  top: 78%!important;
+  width: 90%;
+  left: 5%;
   position: fixed;
 }
 
@@ -451,6 +447,7 @@ ul> a > i.material-icons{
   color: #1976D2;
 }
 .subject{
+  font-size: 16px;
   font-weight: bold;
 }
 
