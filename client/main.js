@@ -14,6 +14,7 @@ import './main.html';
 
 var user = "Marcus";
 var selected = [];
+var lastPosition = 0;
 console.log(selected);
 
 Template.body.helpers({
@@ -95,7 +96,7 @@ Template.body.helpers({
           return Activities.find (
             {
               createdAt: {$gte: start, $lt: end},
-              student : {$in : currentStudent}
+              student : {$in : currentStudent},
             });
         }
 
@@ -110,7 +111,7 @@ Template.body.helpers({
                 student : {$in : currentStudent}
               }
           );
-        }else{return Activities.find({createdAt: { $gt: new Date(start - (7*24*60*60*1000)) }, student : {$in : currentStudent}}, {sort : {createdAt: -Session.get("order")}})}
+        }else{return Activities.find({createdAt: { $gt: new Date(start - (7*24*60*60*1000)) }, student : {$in : currentStudent}}, {sort : {createdAt: Session.get("order")}})}
 
       case '3':
         if(Session.get("subjectFilter") != null){
@@ -249,11 +250,13 @@ Template.message.events({
 
 Template.body.onRendered(function(){
 
+
   Session.set("newTime", "1" );
   Session.set("subjectFilter", null);
-  Session.set("student", ["Marcus", "James"]);
+  Session.set("student", ["Marcus Langford", "James Langford"]);
   Session.set("selected", []);
   Session.set("showImg", true);
+  Session.set("colourFull", false);
   document.getElementById('settingsSubmit').addEventListener("click", saveSettings, false)
   document.getElementById('delete').addEventListener("click", removeSelected, false)
   document.getElementById('studentsSubmit').addEventListener("click", function(){
@@ -263,6 +266,22 @@ Template.body.onRendered(function(){
 
   }, false)
   Session.set("order", "-1");
+  $(window).scroll(function(event){
+    didScroll = false
+    if(selected.length == 0){
+      if (this.window.scrollY >= lastPosition && didScroll == false) {
+          didScroll = true
+          lastPosition = this.window.scrollY;
+          document.getElementById('priBlue').className = "priBlue hidden animated slideInDown delay-2s"
+      }
+      else if(didScroll == false){
+          lastPosition = this.window.scrollY;
+          document.getElementById('priBlue').className = "priBlue animated slideInUp delay-2s"
+      }
+    }
+
+
+  });
 
 
 
@@ -271,15 +290,16 @@ Template.body.onRendered(function(){
 Template.activity.onRendered(function(){
   $('.materialboxed').materialbox();
   getColour(Template.instance());
+  console.log(Template.instance())
   if(this.data.img == "" || Session.get("showImg") == false){
-    this.firstNode.childNodes[1].childNodes[1].childNodes[9].children[0].style = "display: none"
+    this.firstNode.childNodes[1].childNodes[1].childNodes[11].children[0].style = "display: none"
   }
 });
 
 Template.badge.onRendered(function(){
-  if(this.data.student == "James"){
+  if(this.data.student == "James Langford"){
     this.firstNode.childNodes[1].childNodes[1].className = "card-content student1 black-text"
-  }else if(this.data.student == "Marcus"){
+  }else if(this.data.student == "Marcus Langford"){
     this.firstNode.childNodes[1].childNodes[1].className = "card-content student2 black-text"
   }
 
@@ -318,24 +338,28 @@ Template.inputForm.events({
       }
     }
     Session.set("student", students);
+    if(Session.get("student").length == 0){
+      var $toastContent = $('<span>Select at least one student!</span>').add($('<button id = "back" class="btn-flat toast-action">Back</button>'));
+      Materialize.toast($toastContent, 10000, 'topToast');
+      document.getElementById('back').addEventListener("click", function(){
+        $('#FilterModal').modal('open');
+      }, false)
+    }
+
     if(document.getElementsByClassName('chip selected').length != 0){
 
       Session.set("subjectFilter", document.getElementsByClassName('chip selected')[0].childNodes[0].textContent)
     }
     else{Session.set("subjectFilter", null)}
-
+    refresh();
 
   }
 })
 
 Template.registerHelper('formatDate', function(date) {
-
-
   switch(Session.get("newTime")){
-
     case '1':
-
-      return moment(date).startOf('hour').fromNow();
+      return moment(date).fromNow();
 
     case '2':
       return moment(date).format('dddd'+' MM-DD-YYYY');
@@ -347,16 +371,11 @@ Template.registerHelper('formatDate', function(date) {
 
 
 Template.activity.events({
-  // 'click .save-activity': function(){
-  //
-  //   Activities.update(
-  //     {_id: this._id},
-  //     {
-  //       $set: {"saved": true}
-  //     }
-  //   )
-  //   return false;
-  // }
+  'click .more': function(){
+    $('#moreModal').modal('open');
+    Session.set("eventAction", this);
+
+  },
 
   'click .open': function(){
 
@@ -364,10 +383,12 @@ Template.activity.events({
     if(selected == "" && event.target.id == "select"){
       document.getElementById('delete').style = "display: block";
       document.getElementById('filter').style = "display: none"
+      document.getElementById('priBlue').className = "priBlue hidden animated slideInDown delay-2s"
 
     }else if(selected.length == 1 && event.target.className == "open selected card-content white"){
       document.getElementById('delete').style = "display: none";
       document.getElementById('filter').style = "display: block"
+      document.getElementById('priBlue').className = "priBlue animated slideInUp delay-2s"
     }
 
     if(event.target.id == "select"){
@@ -405,19 +426,43 @@ Template.student.onRendered(function(){
 
   this.lastNode.childNodes[1].childNodes[1].id = this.data._id._str
   this.lastNode.childNodes[1].childNodes[1].addEventListener("change", function(){
+    console.log(this)
     Students.update(
       {_id: new Mongo.ObjectID(this.id)},
       {
         $set: {"colour": this.value}
       }
     )
-    tempId = "";
-    temp = Session.get("newTime");
-    Session.set("newTime", "0");
+    refresh();
 
   }, false)
 
 });
+
+Template.studentFormAdd.events({
+  'click #addStudentBtn': function(){
+    Students.insert(
+      {"_id" : new Mongo.ObjectID, "name" : document.getElementById('first_name').value + ' ' + document.getElementById('last_name').value, "colour" : document.getElementById('addStudentColour').value}
+    )
+  }
+})
+
+Template.activityActions.events({
+  'click .saveActivity': function(){
+    a = (Session.get("eventAction"))
+    console.log(a._id)
+    Saved.insert({"_id" : a._id, "subject" : a.subject, "text" : a.text, "createdAt": a.createdAt, "saved" : true, "student" : a.student, "img" : a.img})
+    var $toastContent = $('<span>Event added to favourites</span>').add($('<button id = "undoSave" class="btn-flat toast-action">Undo</button>'));
+    Materialize.toast($toastContent, 10000, 'topToast');
+    document.getElementById('undoSave').addEventListener("click", undoSave, false)
+  },
+  'click .deleteActivity' : function(){
+    a = (Session.get("eventAction"))
+    selected.push(a);
+    removeSelected();
+  }
+
+})
 
 function saveSettings(){
   if(document.getElementById('s2').checked){
@@ -429,14 +474,24 @@ function saveSettings(){
     Session.set("showImg", false);
   }
   if(document.getElementById('colourCard').checked){
-    //colour whole card
+    Session.set("colourFull", true);
+    refresh();
+  }
+  else if(document.getElementById('colourCard').checked == false){
+    Session.set("colourFull", false);
+    refresh();
   }
 }
 
 function getColour(a){
   b = Students.findOne({"name" : a.data.student})
-
-  a.firstNode.childNodes[1].childNodes[1].style = "background: linear-gradient(to right, white 95%, " + b.colour + " 50%);"
+  if(Session.get("colourFull") == true){
+    a.firstNode.childNodes[1].childNodes[1].style = "background-color:" + b.colour +"!important";
+    a.firstNode.childNodes[1].childNodes[1].className = "open card-content white white-text";
+  }
+  else{
+    a.firstNode.childNodes[1].childNodes[1].style = "background: linear-gradient(to right, white 95%, " + b.colour + " 50%);"
+  }
 
 }
 
@@ -457,7 +512,6 @@ function removeSelected(){
 }
 
 function undoRemove(){
-  console.log(tempSelected);
   for(i = 0; i < num; i++){
     Activities.insert(
       {"_id" : tempSelected[i]._id, "subject" : tempSelected[i].subject, "text" : tempSelected[i].text, "createdAt": tempSelected[i].createdAt, "saved" : false, "student" : tempSelected[i].student, "img" : tempSelected[i].img}
@@ -468,4 +522,27 @@ function undoRemove(){
   var toastElement = $('.toast').first()[0];
   var toastInstance = toastElement.M_Toast;
   toastInstance.remove();
+  refresh();
+}
+
+function undoSave(a){
+  console.log(Session.get("eventAction"))
+  Activities.update(
+    {_id: a._id},
+    {
+      $set: {"saved": false}
+    }
+  )
+  var $toastContent = $('<span>Event removed from favourites</span>')
+  Materialize.toast($toastContent, 10000, 'topToast');
+  var toastElement = $('.toast').first()[0];
+  var toastInstance = toastElement.M_Toast;
+  toastInstance.remove();
+
+}
+
+function refresh(){
+  temp = Session.get("newTime");
+  Session.set("newTime", "0");
+  setTimeout(function(){ Session.set("newTime", temp); }, 500);
 }
