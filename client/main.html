@@ -15,21 +15,20 @@
 </head>
 
 <body>
-
   <div class = "navbar-fixed" style = "bottom: 0; position: fixed;" >
-    <nav class = "priBlue">
+    <div id = "filter" class="fixed-action-btn centerFab" style = "display : block">
+      <a class="btn-floating btn-large amber darken-1 modal-trigger" href="#FilterModal">
+        <i class="material-icons">sort</i>
+      </a>
+    </div>
+    <div id = "delete" class="fixed-action-btn centerFab" style = "display : none">
+      <a class="btn-floating btn-large amber darken-1 animated bounce delay-2s" href="#!">
+        <i class="material-icons">delete</i>
+      </a>
+    </div>
+    <nav id = "priBlue" class = "priBlue">
       <a class = "modal-trigger rightbtn" ><i class="material-icons">search</i></a>
       <a class = "modal-trigger leftbtn" href="#menuModal"><i class="material-icons">expand_less</i></a>
-      <div id = "filter" class="fixed-action-btn centerFab">
-        <a class="btn-floating btn-large amber darken-1 modal-trigger animated" href="#FilterModal">
-          <i class="material-icons">sort</i>
-        </a>
-      </div>
-      <div id = "delete" class="fixed-action-btn centerFab" style = "display : none">
-        <a class="btn-floating btn-large amber darken-1 animated" href="#!">
-          <i class="material-icons">delete</i>
-        </a>
-      </div>
     </nav>
   </div>
 
@@ -116,6 +115,7 @@
         {{/each}}
 
       </ul>
+      <a class="waves-effect waves-light btn modal-trigger centerBtn" href="#addStudent">Add Student</a>
 
 
       <div class="fixed-action-btn centerFab active">
@@ -125,13 +125,29 @@
       </div>
     </div>
 
+    <div id="addStudent" class="modal bottom-sheet">
+      <div class="modal-content">
+        <a class = "right" href="#!" onclick="$('#addStudent').modal('close');"><i style = "color : black" class="material-icons">clear</i></a>
+        <h4>Add Student</h4>
+        {{> studentFormAdd}}
+      </div>
+    </div>
+
+    <div id="moreModal" class="modal bottom-sheet">
+      <div class="modal-content">
+        <a class = "right" href="#!" onclick="$('#moreModal').modal('close');"><i style = "color : black" class="material-icons">clear</i></a>
+        {{> activityActions}}
+
+      </div>
+    </div>
+
     <div id="menuModal" class="modal bottom-sheet">
      <div class="modal-content">
        <ul>
-         <li><a class = "modal-trigger white-text" href="#messagesModal"><i class="material-icons">markunread</i>Messages</a></li>
-         <li><a class = "modal-trigger white-text" href="#savedModal"><i class="material-icons">favorite</i>Saved</a></li>
-         <li><a class = "modal-trigger white-text" href="#studentsModal" onclick="$('#menu').modal('close');"><i class="material-icons">person</i>Students</a></li>
-         <li><a class = "modal-trigger white-text" href="#settingsModal" onclick="$('#menu').modal('close');"><i class="material-icons">settings</i>Settings</a></li>
+         <li class="menuLi"><a class = "modal-trigger white-text" href="#messagesModal" onclick="$('#menuModal').modal('close');"><i class="material-icons">markunread</i><label>Messages</label></a></li>
+         <li class="menuLi"><a class = "modal-trigger white-text" href="#savedModal"><i class="material-icons">favorite</i><label>Saved</label></a></li>
+         <li class="menuLi"><a class = "modal-trigger white-text" href="#studentsModal" onclick="$('#menuModal').modal('close');"><i class="material-icons">person</i><label>Students</label></a></li>
+         <li class="menuLi"><a class = "modal-trigger white-text" href="#settingsModal" onclick="$('#menuModal').modal('close');"><i class="material-icons">settings</i><label>Settings</label></a></li>
        </ul>
      </div>
 
@@ -145,20 +161,20 @@
          </ul>
        </div>
     </div>
-    <h1 id = "title">Today</h1>
-    <div class = "divider">Activities</div>
+    <h1 id = "title" style = "color : black">Today</h1>
+    <!-- <div class = "divider">Activities</div> -->
 
-    {{#momentum plugin='fade'}}
+    {{#momentum plugin='fade'}} 
       {{#each activities}}
         {{> activity}}
       {{/each}}
     {{/momentum}}
 
-    <div class = "divider">Badges</div>
+    <!-- <div class = "divider">Badges</div> -->
     {{#each badges}}
       {{> badge}}
     {{/each}}
-    <div class = "divider">Home Tasks</div>
+    <!-- <div class = "divider">Home Tasks</div> -->
     {{#each hometasks}}
       {{> homeTask}}
     {{/each}}
@@ -211,9 +227,7 @@
       }],
     });
 
-    $(window).scroll(function(event){
-      didScroll = true;
-    });
+
 
 
 
@@ -265,14 +279,14 @@
   <form id= "radio" action="#">
     <p>
       <label>
-        <input type="checkbox" value = "Marcus" class="filled-in studentCheck" checked="checked" />
-        <span>Marcus</span>
+        <input type="checkbox" value = "Marcus Langford" class="filled-in studentCheck" checked="checked" />
+        <span>Marcus Langford</span>
       </label>
     </p>
     <p>
       <label>
-        <input type="checkbox" value = "James" class="filled-in studentCheck" checked="checked" />
-        <span>James</span>
+        <input type="checkbox" value = "James Langford" class="filled-in studentCheck" checked="checked" />
+        <span>James Langford</span>
       </label>
     </p>
 
@@ -290,11 +304,13 @@
     <div  class="card horizontal">
       <div class="card-stacked">
         <div id = "select" class="open card-content white">
+          <a class="secondary-content more"><i class="material-icons">more_horiz</i></a>
           <p class = "subject" style = "display: inline-block">{{subject}}</p> - <p class = "light" style = "display: inline-block">{{formatDate createdAt}}</p>
           <a href = "#"></a>
           <p>{{text}}</p>
           <img class="materialboxed" width="150" src="{{img}}" style = "display: inline-block">
         </div>
+
       </div>
     </div>
 </template>
@@ -346,7 +362,39 @@
         <input id = "" class = "colour" type="color" value={{colour}}  >
         <span class="title">{{name}}</span>
     </div>
-
-    <a href="#!" class="secondary-content"><i class="material-icons" style = "color : black">create</i></a>
   </li>
+</template>
+
+<template name = "studentFormAdd">
+  <div class="row">
+     <form class="col s12">
+       <div class="row">
+         <div class="input-field col s6">
+           <input id="first_name" type="text" class="validate">
+           <label for="first_name">First Name</label>
+         </div>
+         <div class="input-field col s6">
+           <input id="last_name" type="text" class="validate">
+           <label for="last_name">Last Name</label>
+         </div>
+       </div>
+       <div class="row">
+         <div>
+             <input id = "addStudentColour" class = "colour" type="color">
+             <span class="title">Colour</span>
+         </div>
+       </div>
+     </form>
+     <div class="modal-footer">
+       <a href="#!" id='addStudentBtn' class="modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
+     </div>
+   </div>
+</template>
+
+<template name = "activityActions">
+  <ul>
+    <li class="menuLi"><a class = "saveActivity" href="#!" onclick="$('#moreModal').modal('close');"><i class="material-icons black-text">save</i><label class = "black-text">Save Activity</label></a></li>
+    <li class="menuLi"><a class = "deleteActivity" href="#!" onclick="$('#moreModal').modal('close');"><i class="material-icons black-text">delete</i><label class = "black-text">Delete Activity</label></a></li>
+    <li class="menuLi"><a class = "" href="" onclick="$('#moreModal').modal('close');"><i class="material-icons black-text">share</i><label class = "black-text">Share Activity</label></a></li>
+  </ul>
 </template>
