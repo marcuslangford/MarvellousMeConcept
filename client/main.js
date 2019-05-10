@@ -1,7 +1,5 @@
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
-import { Notes } from '../lib/collections.js';
-import { Notifications } from '../lib/collections.js';
 import { Activities } from '../lib/collections.js';
 import { HomeTasks } from '../lib/collections.js';
 import { Badges } from '../lib/collections.js';
@@ -12,67 +10,18 @@ import { Mongo } from 'meteor/mongo'
 import './main.html';
 
 
-var user = "Marcus";
 var selected = [];
+var students = [];
+var subjects = [];
+var defaultStudents = [];
 var lastPosition = 0;
-console.log(selected);
+var selectedChips = []
+var selectedChipsSubject = []
 
 Template.body.helpers({
 
 
-  notifications(){
-    var item;
 
-    //Find all new items in collections which are new
-    newActivities = Activities.find({new : true});
-    newMessages = Messages.find({new : true});
-    newBadges = Badges.find({new : true});
-
-    //Update items so they are no longer new and add an item to the notifications collection
-    newActivities.forEach(function(item){
-      console.log(item.student)
-      Activities.update(
-        {_id: item._id},
-        {
-          $set: {"new": false}
-        }
-      )
-      Notifications.insert({"type" : "activity","text" : item.student +  " Learned an Activity", "obID" : item._id})
-    })
-    newMessages.forEach(function(message){
-      Messages.update(
-        {_id: message._id},
-        {
-          $set: {"new": false}
-        }
-      )
-      Notifications.insert({"type" : "Message","text" : "New Message!", "obID" : message._id})
-    })
-    newBadges.forEach(function(badge){
-      console.log(badge._id._str)
-      Badges.update(
-        {_id: badge._id},
-        {
-          $set: {"new": false}
-        }
-      )
-      Notifications.insert({"type" : "Badge","text" : "Marcus earned a new badge!", "obID" : badge._id})
-    })
-    //find the notification button from html
-    x = document.getElementById('notify');
-    //if there are notifications, make the notifications button pulse
-    if(Notifications.find({}).count() != 0){
-      x.className = "rightbtn waves-effect waves-light btn blue modal-trigger pulse";
-    }
-    else {
-      x.className = "rightbtn waves-effect waves-light btn blue modal-trigger";
-    }
-
-
-    return Notifications.find({});
-
-
-  },
 
   activities(){
     var start =  new Date();
@@ -88,7 +37,7 @@ Template.body.helpers({
           return Activities.find (
             {
               createdAt: {$gte: start, $lt: end},
-              subject  : Session.get("subjectFilter"),
+              subject  : {$in : Session.get("subjectFilter")},
             });
 
         } else{
@@ -96,9 +45,10 @@ Template.body.helpers({
           return Activities.find (
             {
               createdAt: {$gte: start, $lt: end},
-              student : {$in : currentStudent},
-            });
-        }
+              student : {$in : currentStudent}},
+              {sort : {createdAt: Session.get("order")}}
+          )};
+
 
 
       case '2':
@@ -107,7 +57,7 @@ Template.body.helpers({
           return Activities.find (
               {
                 createdAt: { $gt: new Date(start - (7*24*60*60*1000)) },
-                subject  : Session.get("subjectFilter"),
+                subject  : {$in : Session.get("subjectFilter")},
                 student : {$in : currentStudent}
               }
           );
@@ -115,9 +65,13 @@ Template.body.helpers({
 
       case '3':
         if(Session.get("subjectFilter") != null){
-          return Activities.find ({subject  : Session.get("subjectFilter"), student : {$in : currentStudent}});
+          return Activities.find ({subject  : {$in : Session.get("subjectFilter")}, student : {$in : currentStudent}});
           break;
-        }else{return Activities.find({student : {$in : currentStudent}}, {sort : {createdAt: Session.get("order")}})};
+        }else{return Activities.find(
+          {
+            student : {$in : currentStudent}},
+           {sort : {createdAt: Session.get("order")}}
+       )};
 
       case '4':
         return Activities.find ({ saved: true, student : {$in : currentStudent}});
@@ -152,71 +106,6 @@ Template.body.helpers({
     return Messages.find({});
   },
 
-  badges(){
-    var start =  new Date();
-    start.setHours(0,0,0,0);
-    var end = new Date();
-    end.setHours(23,59,59,999);
-    switch(Session.get("newTime")){
-
-      case '1':
-        return Badges.find({createdAt: {$gte: start, $lt: end}, student : {$in : currentStudent}});
-
-      case '2':
-
-        return Badges.find({createdAt: { $gt: new Date(start - (7*24*60*60*1000)) }, student : {$in : currentStudent}});
-
-      case '3':
-
-        return Badges.find({student : {$in : currentStudent}});
-
-      case '4':
-
-        return Badges.find({saved : true, student : {$in : currentStudent}});
-
-    }
-    return Badges.find({});
-  },
-
-  hometasks(){
-    // var start =  new Date();
-    // start.setHours(0,0,0,0);
-    // var end = new Date();
-    // end.setHours(23,59,59,999);
-    // Session.set("btotal", Badges.find({createdAt: { $gt: new Date(start - (7*24*60*60*1000)) }, student : currentStudent}).count())
-    // getTotal();
-    // x = document.getElementById('bempty');
-    // // switch(Session.get("bnewTime")){
-    // //
-    // //   case '1':
-    // //
-    // //     if(Badges.find({createdAt: {$gte: start, $lt: end}}).count() == 0){
-    // //       x.style.display = "block";
-    // //       x.innerHTML = "No new Badges today!"
-    // //     }else{x.style.display = "none"}
-    // //
-    // //     return Badges.find({createdAt: {$gte: start, $lt: end}, student : currentStudent});
-    // //
-    // //   case '2':
-    // //     x.style.display = "none";
-    // //
-    // //     return Badges.find({createdAt: { $gt: new Date(start - (7*24*60*60*1000)) }, student : currentStudent});
-    // //
-    // //   case '3':
-    // //     x.style.display = "none";
-    // //
-    // //     return Badges.find({student : currentStudent});
-    // //
-    // //   case '4':
-    // //     x.style.display = "none";
-    // //
-    // //     return Badges.find({saved : true, student : currentStudent});
-    // //
-    // // }
-
-    return HomeTasks.find({});
-  },
-
   applySettings(){
     document.getElementById('settingsSubmit').addEvent = function(){
       console.log(123)
@@ -225,17 +114,14 @@ Template.body.helpers({
 
   students(){
     return Students.find({});
+  },
+
+  saved(){
+    return Saved.find ({});
   }
 
 
 })
-Template.notification.events({
-  'click .delete-note': function(){
-    Notifications.remove(this._id);
-    return false;
-  }
-});
-
 
 
 Template.message.events({
@@ -249,8 +135,6 @@ Template.message.events({
 
 
 Template.body.onRendered(function(){
-
-
   Session.set("newTime", "1" );
   Session.set("subjectFilter", null);
   Session.set("student", ["Marcus Langford", "James Langford"]);
@@ -285,14 +169,23 @@ Template.body.onRendered(function(){
 
 
 
+
 });
 
 Template.activity.onRendered(function(){
   $('.materialboxed').materialbox();
   getColour(Template.instance());
-  console.log(Template.instance())
   if(this.data.img == "" || Session.get("showImg") == false){
     this.firstNode.childNodes[1].childNodes[1].childNodes[11].children[0].style = "display: none"
+  }
+  if(Session.get("cardSize") == "compact"){
+    console.log(this)
+    this.firstNode.childNodes[1].childNodes[1].childNodes[9].attributes[1].textContent = "display:none"
+    this.firstNode.childNodes[1].childNodes[1].childNodes[13].style = "display : block";
+  }
+  else{
+    this.firstNode.childNodes[1].childNodes[1].childNodes[9].style == "display:block"
+    this.firstNode.childNodes[1].childNodes[1].childNodes[13].style = "display : none";
   }
 });
 
@@ -309,49 +202,41 @@ Template.badge.onRendered(function(){
 Template.inputForm.events({
   'click #asubmitTime' : function(event, template){
 
-    var students = []
-    Session.set("student", [])
+
     Session.set("newTime", "")
     if(document.getElementById("timePicker").value == ""){
       if(document.getElementById("r1").checked){
-        document.getElementById('title').innerHTML = "Today"
+        document.getElementById('main').style = "display: block"
+        document.getElementById('savedContainer').style = "display: none"
         Session.set("newTime", "1");
       }
       else if(document.getElementById("r2").checked){
-        document.getElementById('title').innerHTML = "This Week"
+        document.getElementById('main').style = "display: block"
+        document.getElementById('savedContainer').style = "display: none"
         Session.set("newTime", "2");
       }
       else if(document.getElementById("r3").checked){
-        document.getElementById('title').innerHTML = "All"
+        document.getElementById('main').style = "display: block"
+        document.getElementById('savedContainer').style = "display: none"
         Session.set("newTime", "3");
       }
       else if(document.getElementById("r4").checked){
+        document.getElementById('main').style = "display: none"
+        document.getElementById('savedContainer').style = "display: block"
         Session.set("newTime", "4");
       }
     }
     else if(document.getElementById("timePicker").value != ""){
       Session.set("newTime", "5");
     }
-    for(i = 0; i < 2; i++){
-      if (document.getElementsByClassName('studentCheck')[i].checked){
-        students.push(document.getElementsByClassName('studentCheck')[i].value)
-      }
-    }
-    Session.set("student", students);
-    if(Session.get("student").length == 0){
-      var $toastContent = $('<span>Select at least one student!</span>').add($('<button id = "back" class="btn-flat toast-action">Back</button>'));
-      Materialize.toast($toastContent, 10000, 'topToast');
-      document.getElementById('back').addEventListener("click", function(){
-        $('#FilterModal').modal('open');
-      }, false)
-    }
+
 
     if(document.getElementsByClassName('chip selected').length != 0){
 
       Session.set("subjectFilter", document.getElementsByClassName('chip selected')[0].childNodes[0].textContent)
     }
     else{Session.set("subjectFilter", null)}
-    refresh();
+    refresh(100);
 
   }
 })
@@ -360,11 +245,10 @@ Template.registerHelper('formatDate', function(date) {
   switch(Session.get("newTime")){
     case '1':
       return moment(date).fromNow();
-
     case '2':
-      return moment(date).format('dddd'+' MM-DD-YYYY');
+      return moment(date).format('dddd');
     case '3':
-      return moment(date).format('MM-DD-YYYY');
+      return moment(date).format('DD-MM-YYYY');
   }
 });
 
@@ -374,12 +258,9 @@ Template.activity.events({
   'click .more': function(){
     $('#moreModal').modal('open');
     Session.set("eventAction", this);
-
   },
 
   'click .open': function(){
-
-
     if(selected == "" && event.target.id == "select"){
       document.getElementById('delete').style = "display: block";
       document.getElementById('filter').style = "display: none"
@@ -404,13 +285,23 @@ Template.activity.events({
 
 
 
+  },
+  'click .activityExpand': function(){
+    if(Session.get("cardSize") == "compact"){
+      if(event.path[2].childNodes[9].attributes[1].nodeValue == "display:block"){
+        event.path[2].childNodes[9].attributes[1].nodeValue = "display:none"
+      }else{
+        event.path[2].childNodes[9].attributes[1].nodeValue = "display:block"
+      }
+    }
+
+
   }
 
 });
 
 Template.badge.events({
   'click .save-activity': function(){
-
     Badges.update(
       {_id: this._id},
       {
@@ -433,19 +324,136 @@ Template.student.onRendered(function(){
         $set: {"colour": this.value}
       }
     )
-    refresh();
+    refresh(500);
 
   }, false)
 
 });
 
+
+
 Template.studentFormAdd.events({
   'click #addStudentBtn': function(){
-    Students.insert(
-      {"_id" : new Mongo.ObjectID, "name" : document.getElementById('first_name').value + ' ' + document.getElementById('last_name').value, "colour" : document.getElementById('addStudentColour').value}
-    )
+    addStudent();
   }
 })
+
+
+Template.topFilter.events({
+  'click .chips-student': function(){
+    var data= $('.chips-student').material_chip('data');
+    for(i = 0; i < data.length; i++){
+      b = Students.findOne({"name" : data[i].value})
+      if(data[i].value.match(event.target.innerText)){
+        if(selectedChips.includes(data[i].value)){
+          selectedChips.splice(selectedChips.indexOf(data[i].value), 1)
+          students.splice(students.indexOf(data[i].value),1)
+          event.target.style = "background-color : inherit !important; color : rgba(0,0,0,0.6) !important"
+          Session.set("student", students)
+          // refresh();
+        }
+        else{
+
+          selectedChips.push(data[i].value)
+          students.push(data[i].value)
+          if (i == 0){
+            event.target.className = "chip chipleft";
+          }else if(i == data.length-1){
+            event.target.className = "chip chipright";
+          }else{
+            event.target.className = "chip chipMiddle"
+          }
+          event.target.style = "background-color :"+ b.colour + " !important; color : white !important"
+
+          Session.set("student", students)
+          // refresh();
+        }
+
+
+      }
+    }
+    refresh(100);
+
+
+  },
+
+  'click .chips-time': function(){
+
+    x = document.getElementsByClassName('chips-time')[0].childNodes
+    for(i = 0; i < x.length; i++){
+      x[i].style = "background-color : inherit !important; color : rgba(0,0,0,0.6) !important"
+
+    }
+
+    var selectedTime = null
+    var dataTime = $('.chips-time').material_chip('data');
+    for(i = 0; i < dataTime.length; i++){
+
+      if(dataTime[i].tag.match(event.target.innerText)){
+        console.log(i)
+        if (i == 0){
+          event.target.className = "chip chipleft";
+        }else if(i == dataTime.length-1){
+          event.target.className = "chip chipright";
+        }else{
+          event.target.className = "chip chipMiddle"
+        }
+        selectedTime = dataTime[i].value
+        Session.set("newTime", selectedTime);
+        event.target.style = "background-color : #ffb300 !important; color : white !important";
+        refresh(500);
+
+
+      }
+    }
+  },
+  'click .chips-subject': function(){
+    var data= $('.chips-subject').material_chip('data');
+    for(i = 0; i < data.length; i++){
+
+      if(data[i].value.match(event.target.innerText)){
+        if(selectedChipsSubject.includes(data[i].value)){
+          selectedChipsSubject.splice(selectedChipsSubject.indexOf(data[i].value), 1)
+          subjects.splice(subjects.indexOf(data[i].value),1)
+          event.target.style = "background-color : inherit !important; color : rgba(0,0,0,0.6) !important"
+          console.log(subjects)
+          if(subjects.length == 0){
+            Session.set("subjectFilter", null)
+          }else{
+            Session.set("subjectFilter", subjects)
+          }
+
+        }
+        else{
+
+          selectedChipsSubject.push(data[i].value)
+          subjects.push(data[i].value)
+          if (i == 0){
+            event.target.className = "chip chipleft";
+          }else if(i == data.length-1){
+            event.target.className = "chip chipright";
+          }else{
+            event.target.className = "chip chipMiddle"
+          }
+          event.target.style = "background-color : rgb(220, 92, 92) !important; color : white !important"
+
+          Session.set("subjectFilter", subjects)
+        }
+
+
+      }
+    }
+
+    refresh(100);
+
+
+  }
+})
+
+Template.activityActions.onRendered(function(){
+  a = Session.get("eventAction")
+
+});
 
 Template.activityActions.events({
   'click .saveActivity': function(){
@@ -472,15 +480,24 @@ function saveSettings(){
 
   if(document.getElementById('hideImg').checked){
     Session.set("showImg", false);
+  }else {
+    Session.set("showImg", true);
   }
   if(document.getElementById('colourCard').checked){
     Session.set("colourFull", true);
-    refresh();
+
   }
   else if(document.getElementById('colourCard').checked == false){
     Session.set("colourFull", false);
-    refresh();
+
   }
+  if(document.getElementById('c2').checked){
+    Session.set("cardSize", "compact");
+
+  }else{Session.set("cardSize", "full")}
+
+  refresh(500);
+
 }
 
 function getColour(a){
@@ -509,6 +526,7 @@ function removeSelected(){
   selected = [];
   document.getElementById('delete').style = "display: none";
   document.getElementById('filter').style = "display: block"
+  document.getElementById('priBlue').className = "priBlue animated slideInUp delay-2s";
 }
 
 function undoRemove(){
@@ -522,7 +540,7 @@ function undoRemove(){
   var toastElement = $('.toast').first()[0];
   var toastInstance = toastElement.M_Toast;
   toastInstance.remove();
-  refresh();
+  refresh(500);
 }
 
 function undoSave(a){
@@ -541,8 +559,29 @@ function undoSave(a){
 
 }
 
-function refresh(){
+function addStudent(){
+  first= document.getElementById('first_name').value
+  last = document.getElementById('last_name').value
+  var letters = /^[A-Za-z]+$/;
+
+  var letters = /^[A-Za-z]+$/;
+  if(first.match(letters) && last.match(letters))
+  {
+    Students.insert(
+      {"_id" : new Mongo.ObjectID, "name" : first + ' ' + last, "colour" : document.getElementById('addStudentColour').value}
+    )
+    return true
+  }
+  else
+  {
+    alert('Only Enter Letters!');
+    return false;
+  }
+
+}
+
+function refresh(t){
   temp = Session.get("newTime");
   Session.set("newTime", "0");
-  setTimeout(function(){ Session.set("newTime", temp); }, 500);
+  setTimeout(function(){ Session.set("newTime", temp); }, t);
 }
