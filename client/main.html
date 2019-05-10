@@ -17,29 +17,20 @@
 <body>
   <div class = "navbar-fixed" style = "bottom: 0; position: fixed;" >
     <div id = "filter" class="fixed-action-btn centerFab" style = "display : block">
-      <a class="btn-floating btn-large amber darken-1 modal-trigger" href="#FilterModal">
-        <i class="material-icons">sort</i>
+      <a class="btn-floating btn-large amber darken-1 modal-trigger" href="#FilterModal" style = "visibility: hidden">
+        <i class="material-icons black-text">sort</i>
       </a>
     </div>
     <div id = "delete" class="fixed-action-btn centerFab" style = "display : none">
       <a class="btn-floating btn-large amber darken-1 animated bounce delay-2s" href="#!">
-        <i class="material-icons">delete</i>
+        <i class="material-icons black-text">delete</i>
       </a>
     </div>
     <nav id = "priBlue" class = "priBlue">
-      <a class = "modal-trigger rightbtn" ><i class="material-icons">search</i></a>
+      <a href = "#settingsModal" class = "modal-trigger rightbtn" ><i class="material-icons">settings</i></a>
       <a class = "modal-trigger leftbtn" href="#menuModal"><i class="material-icons">expand_less</i></a>
     </nav>
   </div>
-
-  <!-- <ul id="slide-out" class="side-nav">
-    <h3>MarvellousMe</h3>
-    <li><div class="divider"></div></li>
-    <li><a class = "modal-trigger" href="#messagesModal"><i class="material-icons">markunread</i>Messages</a></li>
-    <li><a class = "modal-trigger" href="#savedModal"><i class="material-icons">favorite</i>Saved</a></li>
-    <li><a class = "modal-trigger" href="#studentsModal"><i class="material-icons">person</i>Students</a></li>
-    <li><a class = "modal-trigger" href="#settingsModal"><i class="material-icons">settings</i>Settings</a></li>
-  </ul> -->
 
   <section>
     <div id = "FilterModal" class = "modal full bottom-sheet">
@@ -78,6 +69,21 @@
           </label>
         </p>
       </form>
+      <p>Card Size</p>
+      <form id = "cardSizeSelect">
+        <p>
+          <label>
+            <input id = "c1" name="group1" type="radio" checked />
+            <span>Full Size</span>
+          </label>
+        </p>
+        <p>
+          <label>
+            <input id = "c2" name="group1" type="radio" />
+            <span>Compact</span>
+          </label>
+        </p>
+      </form>
       <div class="switch">
         <label class = "settings">
           Hide Images in Events
@@ -95,11 +101,12 @@
 
 
 
+
     <!-- <a class="waves-effect waves-light btn-large rounded mainButton">Apply</a>
     <a class="waves-effect waves-light btn-large rounded secondayButton">Reset</a> -->
       <div class="fixed-action-btn centerFab active">
         <a id = "settingsSubmit" class="btn-floating btn-large amber darken-1 modal-close animated bounce delay-2s" href="#!">
-          <i class="material-icons">check</i>
+          <i class="material-icons black-text">check</i>
         </a>
       </div>
     </div>
@@ -120,7 +127,7 @@
 
       <div class="fixed-action-btn centerFab active">
         <a id = "studentsSubmit" class="btn-floating btn-large amber darken-1 modal-close animated bounce delay-2s" href="#!">
-          <i class="material-icons">check</i>
+          <i class="material-icons black-text">check</i>
         </a>
       </div>
     </div>
@@ -147,7 +154,6 @@
          <li class="menuLi"><a class = "modal-trigger white-text" href="#messagesModal" onclick="$('#menuModal').modal('close');"><i class="material-icons">markunread</i><label>Messages</label></a></li>
          <li class="menuLi"><a class = "modal-trigger white-text" href="#savedModal"><i class="material-icons">favorite</i><label>Saved</label></a></li>
          <li class="menuLi"><a class = "modal-trigger white-text" href="#studentsModal" onclick="$('#menuModal').modal('close');"><i class="material-icons">person</i><label>Students</label></a></li>
-         <li class="menuLi"><a class = "modal-trigger white-text" href="#settingsModal" onclick="$('#menuModal').modal('close');"><i class="material-icons">settings</i><label>Settings</label></a></li>
        </ul>
      </div>
 
@@ -161,23 +167,28 @@
          </ul>
        </div>
     </div>
-    <h1 id = "title" style = "color : black">Today</h1>
-    <!-- <div class = "divider">Activities</div> -->
+    <div style='overflow-x:scroll;overflow-y:hidden'>
+      <div style='width:max-content'>
+        {{> topFilter}}
+      </div>
+    </div>
 
-    {{#momentum plugin='fade'}} 
-      {{#each activities}}
-        {{> activity}}
-      {{/each}}
-    {{/momentum}}
+    <div id = "main">
 
-    <!-- <div class = "divider">Badges</div> -->
-    {{#each badges}}
-      {{> badge}}
-    {{/each}}
-    <!-- <div class = "divider">Home Tasks</div> -->
-    {{#each hometasks}}
-      {{> homeTask}}
-    {{/each}}
+        {{#momentum plugin='fade'}}
+            {{#each activities}}
+              {{> activity}}
+            {{/each}}
+        {{/momentum}}
+    </div>
+    <div id = "savedContainer" style = "display: none">
+      {{#momentum plugin='fade'}}
+        {{#each saved}}
+          {{> activity}}
+        {{/each}}
+      {{/momentum}}
+    </div>
+
 
 
   </section>
@@ -187,7 +198,9 @@
     $(document).ready(function(){
       $('.modal').modal();
     });
-
+    $(document).ready(function(){
+      $('.collapsible').collapsible();
+    });
 
     $(document).ready(function(){
       $('tabs').tabs();
@@ -226,6 +239,50 @@
         tag: 'History',
       }],
     });
+    $('.chips-time ').material_chip({
+       data: [{
+         tag: 'Today',
+         value : "1"
+       }, {
+         tag: 'Last Week',
+         value : "2"
+       }, {
+         tag: 'All',
+         value : "3",
+       }],
+
+     });
+     $('.chips-student ').material_chip({
+        data: [{
+          tag: 'Marcus',
+          value : "Marcus Langford",
+        }, {
+          tag: 'James',
+          value : "James Langford"
+        }],
+
+      });
+      $('.chips-subject').material_chip({
+         data: [{
+           tag: 'Maths',
+           value: 'Maths'
+         }, {
+           tag: 'Science',
+           value: 'Science'
+         }, {
+           tag: 'Art',
+           value: 'Art'
+         },{
+           tag: 'Music',
+           value: 'Music'
+         },{
+           tag: 'PE',
+           value: 'PE'
+         },{
+           tag: 'History',
+           value: 'History'
+         }],
+       });
 
 
 
@@ -236,17 +293,22 @@
 </body>
 
 
-<template name = "notification">
-  <li class = "collection-item">
-    {{text}}
-    <a href = "#" class = "delete-note secondary-content" ><i class="material-icons red">close</i></a>
-  </li>
+<template name = "topFilter">
+  <div class="chips chips-time" style= "display: inline-block">
+
+  </div>
+  <div class="chips chips-student" style= "display: inline-block">
+
+  </div>
+  <div class="chips chips-subject" style= "display: inline-block">
+
+  </div>
 </template>
 
 <template name = "inputForm">
-  <h4 style = "display: inline-block">Subject</h4> - <p id = "aonly" style = "display: inline-block">Activities Only</p>
+  <h4 style = "display: inline-block">Subject</h4>
   <div class="chips chips-initial"></div>
-  <h4>Time Period</h4>
+  <h4>Filter By</h4>
   <form id = "activitySelect">
 
     <p>
@@ -293,7 +355,7 @@
   </form>
   <div class="fixed-action-btn centerFab active">
     <a id = "asubmitTime" class="btn-floating btn-large amber darken-1 modal-close animated bounce delay-2s" href="#!">
-      <i class="material-icons">check</i>
+      <i class="material-icons black-text">check</i>
     </a>
   </div>
   <!-- <a href = "#!" id = "asubmitTime" class = "rounded btn waves-effect waves-light modal-close blue centerBtn">Submit</a> -->
@@ -307,8 +369,9 @@
           <a class="secondary-content more"><i class="material-icons">more_horiz</i></a>
           <p class = "subject" style = "display: inline-block">{{subject}}</p> - <p class = "light" style = "display: inline-block">{{formatDate createdAt}}</p>
           <a href = "#"></a>
-          <p>{{text}}</p>
+          <p class = "content" style = "display: block">{{text}}</p>
           <img class="materialboxed" width="150" src="{{img}}" style = "display: inline-block">
+          <a class="activityExpand"><i class="material-icons">expand_more</i></a>
         </div>
 
       </div>
@@ -322,11 +385,6 @@
         <p class = "subject" style = "display: inline-block">{{subject}}</p> - <p class = "light" style = "display: inline-block">{{formatDate createdAt}}</p>
         <p>{{text}}</p>
       </div>
-      <!-- <div class="card-action blue">
-        <a href = "#"><i class="material-icons">thumb_up</i></a>
-        <a href = "#"><i class="material-icons">share</i></a>
-        <a href = "#"><i class="save-activity material-icons right">favorite</i></a>
-      </div> -->
     </div>
   </div>
 </template>
@@ -378,7 +436,7 @@
            <label for="last_name">Last Name</label>
          </div>
        </div>
-       <div class="row">
+       <div class="row" id = "studentRow">
          <div>
              <input id = "addStudentColour" class = "colour" type="color">
              <span class="title">Colour</span>
@@ -386,7 +444,7 @@
        </div>
      </form>
      <div class="modal-footer">
-       <a href="#!" id='addStudentBtn' class="modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
+       <a href="#!" id='addStudentBtn' class="modal-action modal-close waves-effect waves-green btn-flat">Submit</a>
      </div>
    </div>
 </template>
