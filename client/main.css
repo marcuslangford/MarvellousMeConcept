@@ -19,6 +19,10 @@ body {
   z-index: 1014 !important;
 }
 
+.activityExpand{
+  margin-left: 45%;
+}
+
 .grey{
   background-color: #f2f2f2 !important;
 }
@@ -31,10 +35,87 @@ body {
 }
 
 
+
+.chips-time > .chip{
+  margin: 0 0 0 0;
+  background-color: inherit;
+}
+
+.chips.chips-time{
+  width: max-content;
+  border: solid;
+  border-width: 0.9px;
+  border-radius: 20px;
+  border-color: #adadad;
+  min-height: 0;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+
+
+}
+.chips-student > .chip{
+  margin: 0 0 0 0;
+  background-color: inherit;
+}
+
+.chips.chips-student{
+  width: max-content;
+  border: solid;
+  border-width: 0.9px;
+  border-radius: 20px;
+  border-color: #adadad;
+  min-height: 0;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+
+}
+.chips.chips-subject{
+  width: max-content;
+  border: solid;
+  border-width: 0.9px;
+  border-radius: 20px;
+  border-color: #adadad;
+  min-height: 0;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+
+}
+
+.chips-subject > .chip{
+  margin: 0 0 0 0;
+  background-color: inherit;
+}
+
+.chipleft{
+  border-radius: 20px 0 0 20px;
+}
+.chipright{
+  border-radius: 0 20px 20px 0;
+}
+.chipMiddle{
+  border-radius: 0;
+}
+
+
+.chips-time.chip.selected{
+  transition: 0.3s ease
+}
+
+#today{
+  border-radius: 20px 0 0 20px;
+  border-right: solid;
+  border-width: 0.9px;
+}
+#all{
+  border-radius: 0 20px 20px 0;
+  border-left: solid;
+  border-width: 0.9px;
+}
 h1{
   font-size: 2rem !important;
   margin: 0.67em 0;
   font-weight: bolder;
+  text-align: center;
 }
 
 h4{
@@ -74,16 +155,7 @@ nav > img{
   height: 50px;
 }
 
-.tab{
-  font-weight: bold;
-  letter-spacing: 0.5px;
 
-}
-/*
-.tabs .tab {
-    padding-left: 0.3em;
-    padding-right: 0.3em;
-} */
 
 nav > div > a > .material-icons {
   line-height: 40%;
@@ -102,11 +174,10 @@ h3{
 }
 
 
-.chips-initial{
-}
 
 .chip.selected{
   background-color: #ffb300 !important;
+  transition: all 0.3s ease;
 }
 
 form {
@@ -297,15 +368,7 @@ nav {
   height : 6em;
 }
 
-.student1{
-  background: linear-gradient(to right, white 95%, #79D18A 50%);
-  /* background-color: #79D18A; */
-}
 
-.student2{
-  background : linear-gradient(to right, white 95%, #3A86FF 50%);
-  /* background-color: #3A86FF; */
-}
 
 div.chip > i.material-icons{
   display: none;
@@ -335,6 +398,27 @@ div.chip > i.material-icons{
 
 .card.horizontal.fade{
   transition: 0.3s ease
+}
+
+#studentRow{
+  padding-left: 0.5em;
+}
+.label.active{
+  color: black
+}
+
+input.valid[type=text]:not(.browser-default){
+  border-bottom: 1px solid #ffb300;
+  box-shadow: 0 1px 0 0 #ffb300;
+}
+
+input[type=text]:not(.browser-default):focus:not([readonly]){
+  border-bottom: 1px solid #ffb300;
+  box-shadow: 0 1px 0 0 #ffb300;
+}
+
+input[type=text]:not(.browser-default):focus:not([readonly])+label{
+  color: #ffb300;
 }
 
 #FilterModal{
@@ -370,6 +454,14 @@ div.chip > i.material-icons{
   z-index: 1016 !important;
 }
 
+#menuModal{
+  z-index: 1005!important
+}
+
+
+.modal-overlay{
+  z-index: 999 !important
+}
 
 #studentsModal{
   padding-top: 5em;
@@ -489,10 +581,6 @@ ul> a > i.material-icons{
 #favButton.saved > i.material-icons{
   color: red;
 }
-
-
-
-
 
 .material-icons{
   color: #fff;
