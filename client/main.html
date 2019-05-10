@@ -15,50 +15,32 @@
 </head>
 
 <body>
-
-  <div class = "navbar-fixed">
-    <nav>
-      <div class = "nav-wrapper white">
-        <a class="leftbtn waves-effect waves-light btn blue openBtn" data-activates="slide-out"  href="#!"><i class="material-icons">menu</i></a>
-
-        <a class="rightbtn waves-effect waves-light btn blue modal-trigger"  id = "notify" href="#modal2"><i class="material-icons">notifications</i></a>
-        <ul class="tabs tabs-transparent white">
-          <li id = "studentName" class="tab col s3"><a href="#test1">Marcus</a></li>
-          <li class="tab col s3"><a href="#test2">Activities</a></li>
-          <li class="tab col s3"><a href="#test3">Badges</a></li>
-          <li class="tab col s3"><a href="#test4">Home Tasks</a></li>
-
-        </ul>
-      </div>
+  <div class = "navbar-fixed" style = "bottom: 0; position: fixed;" >
+    <div id = "filter" class="fixed-action-btn centerFab" style = "display : block">
+      <a class="btn-floating btn-large amber darken-1 modal-trigger" href="#FilterModal" style = "visibility: hidden">
+        <i class="material-icons black-text">sort</i>
+      </a>
+    </div>
+    <div id = "delete" class="fixed-action-btn centerFab" style = "display : none">
+      <a class="btn-floating btn-large amber darken-1 animated bounce delay-2s" href="#!">
+        <i class="material-icons black-text">delete</i>
+      </a>
+    </div>
+    <nav id = "priBlue" class = "priBlue">
+      <a href = "#settingsModal" class = "modal-trigger rightbtn" ><i class="material-icons">settings</i></a>
+      <a class = "modal-trigger leftbtn" href="#menuModal"><i class="material-icons">expand_less</i></a>
     </nav>
-
-
-
   </div>
-  <ul id="slide-out" class="side-nav">
-    <h3>MarvellousMe</h3>
-    <li><div class="divider"></div></li>
-    <li><a class = "modal-trigger" href="#messagesModal"><i class="material-icons">markunread</i>Messages</a></li>
-    <li><a class = "modal-trigger" href="#savedModal"><i class="material-icons">favorite</i>Saved</a></li>
-    <li><a class = "modal-trigger" href="#studentsModal"><i class="material-icons">person</i>Students</a></li>
-    <li><a class = "modal-trigger" href="#settingsModal"><i class="material-icons">settings</i>Settings</a></li>
-  </ul>
 
   <section>
-    <div id = "aFilterModal1" class = "modal">
+    <div id = "FilterModal" class = "modal full bottom-sheet">
+      <a class = "right" href="#!" onclick="$('#FilterModal').modal('close');"><i style = "color : black" class="material-icons">clear</i></a>
+      {{> inputForm}}
 
-      <div class = "modal-content">
-        {{> ainputForm}}
-      </div>
     </div>
 
-    <div id = "bFilterModal1" class = "modal">
-      <div class = "modal-content">
-        {{> binputForm}}
-      </div>
-    </div>
 
-    <div id="messagesModal" class="modal bottom-sheet">
+    <div id="messagesModal" class="modal full bottom-sheet">
        <div class="modal-content">
          <ul class = "collapsible">
            {{#each messages}}
@@ -69,72 +51,145 @@
        </div>
     </div>
 
-    <div id="studentsModal" class="modal bottom-sheet">
-       <div class="modal-content">
-         <ul class = "collapsible">
-             <div class="collection">
-               <a href="#!" class="collection-item">Marcus</a>
-               <a href="#!" class="collection-item">James</a>
-             </div>
-         </ul>
+    <div id="settingsModal" class="modal bottom-sheet">
+    <a class = "right" href="#!" onclick="$('#settingsModal').modal('close');"><i style = "color : black" class="material-icons">clear</i></a>
+      <h4>General</h4>
+      <p>Order events by</p>
+      <form id = "activitySelect">
+        <p>
+          <label>
+            <input id = "s1" name="group1" type="radio" checked />
+            <span>Newest First</span>
+          </label>
+        </p>
+        <p>
+          <label>
+            <input id = "s2" name="group1" type="radio" />
+            <span>Oldest First</span>
+          </label>
+        </p>
+      </form>
+      <p>Card Size</p>
+      <form id = "cardSizeSelect">
+        <p>
+          <label>
+            <input id = "c1" name="group1" type="radio" checked />
+            <span>Full Size</span>
+          </label>
+        </p>
+        <p>
+          <label>
+            <input id = "c2" name="group1" type="radio" />
+            <span>Compact</span>
+          </label>
+        </p>
+      </form>
+      <div class="switch">
+        <label class = "settings">
+          Hide Images in Events
+          <input id = "hideImg" type="checkbox">
+          <span class="lever"></span>
+        </label>
+      </div>
+      <div class="switch">
+        <label class = "settings">
+          Colour the entire card
+          <input id = "colourCard" type="checkbox">
+          <span class="lever"></span>
+        </label>
+      </div>
 
-       </div>
+
+
+
+    <!-- <a class="waves-effect waves-light btn-large rounded mainButton">Apply</a>
+    <a class="waves-effect waves-light btn-large rounded secondayButton">Reset</a> -->
+      <div class="fixed-action-btn centerFab active">
+        <a id = "settingsSubmit" class="btn-floating btn-large amber darken-1 modal-close animated bounce delay-2s" href="#!">
+          <i class="material-icons black-text">check</i>
+        </a>
+      </div>
     </div>
 
-    <div id="savedModal" class="modal bottom-sheet">
-       <div class="modal-content">
-       </div>
+    <div id="studentsModal" class="modal bottom-sheet">
+    <a class = "right" href="#!" onclick="$('#studentsModal').modal('close');"><i style = "color : black" class="material-icons">clear</i></a>
+      <h4>My Students</h4>
+
+
+      <ul class="collection">
+        {{#each students}}
+          {{> student}}
+        {{/each}}
+
+      </ul>
+      <a class="waves-effect waves-light btn modal-trigger centerBtn" href="#addStudent">Add Student</a>
+
+
+      <div class="fixed-action-btn centerFab active">
+        <a id = "studentsSubmit" class="btn-floating btn-large amber darken-1 modal-close animated bounce delay-2s" href="#!">
+          <i class="material-icons black-text">check</i>
+        </a>
+      </div>
+    </div>
+
+    <div id="addStudent" class="modal bottom-sheet">
+      <div class="modal-content">
+        <a class = "right" href="#!" onclick="$('#addStudent').modal('close');"><i style = "color : black" class="material-icons">clear</i></a>
+        <h4>Add Student</h4>
+        {{> studentFormAdd}}
+      </div>
+    </div>
+
+    <div id="moreModal" class="modal bottom-sheet">
+      <div class="modal-content">
+        <a class = "right" href="#!" onclick="$('#moreModal').modal('close');"><i style = "color : black" class="material-icons">clear</i></a>
+        {{> activityActions}}
+
+      </div>
+    </div>
+
+    <div id="menuModal" class="modal bottom-sheet">
+     <div class="modal-content">
+       <ul>
+         <li class="menuLi"><a class = "modal-trigger white-text" href="#messagesModal" onclick="$('#menuModal').modal('close');"><i class="material-icons">markunread</i><label>Messages</label></a></li>
+         <li class="menuLi"><a class = "modal-trigger white-text" href="#savedModal"><i class="material-icons">favorite</i><label>Saved</label></a></li>
+         <li class="menuLi"><a class = "modal-trigger white-text" href="#studentsModal" onclick="$('#menuModal').modal('close');"><i class="material-icons">person</i><label>Students</label></a></li>
+       </ul>
+     </div>
+
     </div>
     <div id="modal2" class="modal">
        <div class="modal-content">
          <ul class = "collection" >
-           {{#each notifications}}
+           <!-- {{#each notifications}}
              {{> notification}}
-           {{/each}}
+           {{/each}} -->
          </ul>
        </div>
     </div>
-
-    <div id="test1" class="col s12 ">
-        {{> profile}}
-      <ul class="tabs tabs-transparent white ">
-        <li class="tab col s6"><a href="#mySchool">My School</a></li>
-      </ul>
-
-      <div id="#mySchool" class="col s12 grey">
-        <div class="collection">
-          <a href="#!" class="collection-item">Willink School</a>
-          <a href="#!" class="collection-item">Pay</a>
-          <a href="#!" class="collection-item">Newletter</a>
-        </div>
+    <div style='overflow-x:scroll;overflow-y:hidden'>
+      <div style='width:max-content'>
+        {{> topFilter}}
       </div>
-
     </div>
 
-    <div id="test2" class="col s12 grey" >
-      <a id = "filterButton" class="rounded waves-effect waves-light btn blue modal-trigger filterButton" href="#aFilterModal1">Filter</a>
-      <a id = "favButton" class="rounded waves-effect waves-light btn white favButton" href="#filterModal1"><i class="material-icons">favorite</i></a>
-      <p id = "aempty" style="display: none;"></p>
-      {{#each activities}}
-        {{> activity}}
-      {{/each}}
+    <div id = "main">
+
+        {{#momentum plugin='fade'}}
+            {{#each activities}}
+              {{> activity}}
+            {{/each}}
+        {{/momentum}}
     </div>
-    <div id="test3" class="col s12  grey">
-      <a id = "filterButton" class="rounded waves-effect waves-light btn blue modal-trigger filterButton" href="#bFilterModal1">Filter</a>
-      <a id = "favButton" class="rounded waves-effect waves-light btn white favButton" href="#filterModal1"><i class="material-icons">favorite</i></a>
-      <p id = "bempty" style="display: none;"></p>
-      {{#each badges}}
-        {{> badge}}
-      {{/each}}
+    <div id = "savedContainer" style = "display: none">
+      {{#momentum plugin='fade'}}
+        {{#each saved}}
+          {{> activity}}
+        {{/each}}
+      {{/momentum}}
     </div>
-    <div id = "test4" class = "col s12 white">
-      <ul class="collapsible">
-       <li>
-         <div class="collapsible-header"><i class="material-icons">filter_drama</i>First</div>
-         <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
-       </li>
-      </ul>
-    </div>
+
+
 
   </section>
 
@@ -144,9 +199,13 @@
       $('.modal').modal();
     });
     $(document).ready(function(){
-      $('ul.tabs').tabs({
-      });
+      $('.collapsible').collapsible();
     });
+
+    $(document).ready(function(){
+      $('tabs').tabs();
+    });
+
     $(document).ready(function(){
       $('.collapsible').collapsible();
     });
@@ -165,60 +224,93 @@
    $('.openBtn').sideNav({
      closeOnClick: true
    });
+   $('.chips-initial').material_chip({
+      data: [{
+        tag: 'Maths',
+      }, {
+        tag: 'Science',
+      }, {
+        tag: 'Art',
+      },{
+        tag: 'Music',
+      },{
+        tag: 'PE',
+      },{
+        tag: 'History',
+      }],
+    });
+    $('.chips-time ').material_chip({
+       data: [{
+         tag: 'Today',
+         value : "1"
+       }, {
+         tag: 'Last Week',
+         value : "2"
+       }, {
+         tag: 'All',
+         value : "3",
+       }],
+
+     });
+     $('.chips-student ').material_chip({
+        data: [{
+          tag: 'Marcus',
+          value : "Marcus Langford",
+        }, {
+          tag: 'James',
+          value : "James Langford"
+        }],
+
+      });
+      $('.chips-subject').material_chip({
+         data: [{
+           tag: 'Maths',
+           value: 'Maths'
+         }, {
+           tag: 'Science',
+           value: 'Science'
+         }, {
+           tag: 'Art',
+           value: 'Art'
+         },{
+           tag: 'Music',
+           value: 'Music'
+         },{
+           tag: 'PE',
+           value: 'PE'
+         },{
+           tag: 'History',
+           value: 'History'
+         }],
+       });
+
+
+
+
+
   </script>
 
 </body>
 
 
-<template name = "notification">
-  <li class = "collection-item">
-    {{text}}
-    <a href = "#" class = "delete-note secondary-content" ><i class="material-icons red">close</i></a>
-  </li>
+<template name = "topFilter">
+  <div class="chips chips-time" style= "display: inline-block">
+
+  </div>
+  <div class="chips chips-student" style= "display: inline-block">
+
+  </div>
+  <div class="chips chips-subject" style= "display: inline-block">
+
+  </div>
 </template>
 
-<template name = "ainputForm">
+<template name = "inputForm">
+  <h4 style = "display: inline-block">Subject</h4>
+  <div class="chips chips-initial"></div>
+  <h4>Filter By</h4>
   <form id = "activitySelect">
-    <form action="#">
-      <h3>Filter Subjects</h3>
-        <p>
-          <label>
-            <input id = "s1" name="group1" type="checkbox" />
-            <span>Maths</span>
-          </label>
-        </p>
-        <p>
-          <label>
-            <input id = "s2" name="group1" type="checkbox" />
-            <span>English</span>
-          </label>
-        </p>
-        <p>
-          <label>
-            <input id = "s3" name="group1" type="checkbox"  />
-            <span>PE</span>
-          </label>
-        </p>
-        <p>
-          <label>
-            <input id = "s4" name="group1" type="checkbox" />
-            <span>Science</span>
-          </label>
-        </p>
-        <p>
-          <label>
-            <input id = "s5" name="group1" type="checkbox" />
-            <span>Art</span>
-          </label>
-        </p>
-        <p>
-          <label>
-            <input id = "s6" name="group1" type="checkbox" />
-            <span>All</span>
-          </label>
-        </p>
-    </form>
-    <h3>Time Period</h3>
+
     <p>
       <label>
         <input id = "r1" name="group1" type="radio" checked />
@@ -245,55 +337,53 @@
     </p>
     <input type="text" class="datepicker" id="timePicker">
   </form>
-  <a href = "#!" id = "asubmitTime" class = "rounded btn waves-effect waves-light modal-close blue centerBtn">Submit</a>
+  <h4>Students</h4>
+  <form id= "radio" action="#">
+    <p>
+      <label>
+        <input type="checkbox" value = "Marcus Langford" class="filled-in studentCheck" checked="checked" />
+        <span>Marcus Langford</span>
+      </label>
+    </p>
+    <p>
+      <label>
+        <input type="checkbox" value = "James Langford" class="filled-in studentCheck" checked="checked" />
+        <span>James Langford</span>
+      </label>
+    </p>
 
-</template>
-
-<template name = "binputForm">
-  <form id = "activitySelect">
-    <h3>Time Period</h3>
-    <p>
-      <label>
-        <input id = "b1" name="group1" type="radio" checked />
-        <span>Today</span>
-      </label>
-    </p>
-    <p>
-      <label>
-        <input id = "b2" name="group1" type="radio" />
-        <span>Last 7 Days</span>
-      </label>
-    </p>
-    <p>
-      <label>
-        <input id = "b3" name="group1" type="radio" />
-        <span>All</span>
-      </label>
-    </p>
-    <p>
-      <label>
-        <input id = "b4" name="group1" type="radio" />
-        <span>Saved</span>
-      </label>
-    </p>
-    <input type="text" class="datepicker" id="timePicker">
   </form>
-  <a href = "#!" id = "bsubmitTime" class = "rounded btn waves-effect waves-light modal-close blue centerBtn">Submit</a>
+  <div class="fixed-action-btn centerFab active">
+    <a id = "asubmitTime" class="btn-floating btn-large amber darken-1 modal-close animated bounce delay-2s" href="#!">
+      <i class="material-icons black-text">check</i>
+    </a>
+  </div>
+  <!-- <a href = "#!" id = "asubmitTime" class = "rounded btn waves-effect waves-light modal-close blue centerBtn">Submit</a> -->
 
 </template>
 
 <template name = "activity">
+    <div  class="card horizontal">
+      <div class="card-stacked">
+        <div id = "select" class="open card-content white">
+          <a class="secondary-content more"><i class="material-icons">more_horiz</i></a>
+          <p class = "subject" style = "display: inline-block">{{subject}}</p> - <p class = "light" style = "display: inline-block">{{formatDate createdAt}}</p>
+          <a href = "#"></a>
+          <p class = "content" style = "display: block">{{text}}</p>
+          <img class="materialboxed" width="150" src="{{img}}" style = "display: inline-block">
+          <a class="activityExpand"><i class="material-icons">expand_more</i></a>
+        </div>
+
+      </div>
+    </div>
+</template>
+
+<template name = "homeTask">
   <div class="card horizontal fade">
     <div class="card-stacked">
       <div class="card-content white">
-        <p class = "subject">{{subject}}</p>
+        <p class = "subject" style = "display: inline-block">{{subject}}</p> - <p class = "light" style = "display: inline-block">{{formatDate createdAt}}</p>
         <p>{{text}}</p>
-        <p class = "light">{{formatDate createdAt}}</p>
-      </div>
-      <div class="card-action blue">
-        <a href = "#"><i class="material-icons">thumb_up</i></a>
-        <a href = "#"><i class="material-icons">share</i></a>
-        <a href = "#"><i class="save-activity material-icons right">favorite</i></a>
       </div>
     </div>
   </div>
@@ -303,15 +393,10 @@
   <div class="card horizontal fade">
     <div class="card-stacked">
       <div class="card-content white">
-        <p class = "subject">{{Award}}</p>
+        <p class = "subject" style = "display: inline-block">{{Award}}</p> -   <p class = "light" style = "display: inline-block">{{formatDate createdAt}}</p>
         <p>{{text}}</p>
-        <p class = "light">{{formatDate createdAt}}</p>
       </div>
-      <div class="card-action blue">
-        <a href = "#"><i class="material-icons">thumb_up</i></a>
-        <a href = "#"><i class="material-icons">share</i></a>
-        <a href = "#"><i class="save-activity material-icons right">favorite</i></a>
-      </div>
+
     </div>
   </div>
 </template>
@@ -319,32 +404,55 @@
 <template name = "message">
    <li>
      <div class="collapsible-header">
-       New {{type}}
-       <!-- <a href = "#"><i class="delete-message material-icons right ">close</i></a> -->
+       {{type}}
+       <a href = "#"><i class="delete-message material-icons right ">close</i></a>
      </div>
      <div class="collapsible-body"><span>{{content}}</span></div>
 
    </li>
 </template>
 
-<template name = "profile">
-  <img src="testpic.jpg" alt="" class="circle responsive-img">
-    <div class = "col s12 center">
-      Last 7 Days
-    </div>
+<template name = "student">
 
-      <div class = "container">
-        <div class = "row">
-          <div class = "col s6 center">
-            Activities
-            <br/>
-            <p id = "activitiesTotal"></p>
-          </div>
-          <div class = "col s6 center">
-            Badges
-            <br/>
-            <p id = "badgesTotal"></p>
-          </div>
-        </div>
-      </div>
+
+  <li class="collection-item avatar">
+    <div>
+        <input id = "" class = "colour" type="color" value={{colour}}  >
+        <span class="title">{{name}}</span>
+    </div>
+  </li>
+</template>
+
+<template name = "studentFormAdd">
+  <div class="row">
+     <form class="col s12">
+       <div class="row">
+         <div class="input-field col s6">
+           <input id="first_name" type="text" class="validate">
+           <label for="first_name">First Name</label>
+         </div>
+         <div class="input-field col s6">
+           <input id="last_name" type="text" class="validate">
+           <label for="last_name">Last Name</label>
+         </div>
+       </div>
+       <div class="row" id = "studentRow">
+         <div>
+             <input id = "addStudentColour" class = "colour" type="color">
+             <span class="title">Colour</span>
+         </div>
+       </div>
+     </form>
+     <div class="modal-footer">
+       <a href="#!" id='addStudentBtn' class="modal-action modal-close waves-effect waves-green btn-flat">Submit</a>
+     </div>
+   </div>
+</template>
+
+<template name = "activityActions">
+  <ul>
+    <li class="menuLi"><a class = "saveActivity" href="#!" onclick="$('#moreModal').modal('close');"><i class="material-icons black-text">save</i><label class = "black-text">Save Activity</label></a></li>
+    <li class="menuLi"><a class = "deleteActivity" href="#!" onclick="$('#moreModal').modal('close');"><i class="material-icons black-text">delete</i><label class = "black-text">Delete Activity</label></a></li>
+    <li class="menuLi"><a class = "" href="" onclick="$('#moreModal').modal('close');"><i class="material-icons black-text">share</i><label class = "black-text">Share Activity</label></a></li>
+  </ul>
 </template>
