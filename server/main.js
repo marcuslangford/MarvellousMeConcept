@@ -3,9 +3,6 @@ import { Meteor } from 'meteor/meteor';
 Meteor.startup(() => {
   // code to run on server at startup
 });
-
-export const Notes = new Mongo.Collection('notes');
-export const Notifications = new Mongo.Collection('notifications');
 export const Activities = new Mongo.Collection('activities');
 export const Saved = new Mongo.Collection('saved');
 export const Messages = new Mongo.Collection('messages');
